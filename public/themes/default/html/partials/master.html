@@ -1,0 +1,314 @@
+<div class="main container-fluid">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="row">
+            </div>
+            <div class="block-1" compile="formSearch">
+                
+            </div>
+            <div class="row btn-function text-right">
+                <div class="pagination pull-left">
+                    <dir-pagination-controls boundary-links="true" on-page-change="setPagination(newPageNumber)"></dir-pagination-controls>
+                </div>
+                
+                <span class="btn-group inline-block">
+                    <button ng-class="{'btn-active' : pageSize === 10}" ng-click="setPagination({pageSize: 10})" type="button" class="btn">10件</button>
+                    <button ng-class="{'btn-active' : pageSize === 20}" ng-click="setPagination({pageSize: 20})" type="button" class="btn">20件</button>
+                    <button ng-class="{'btn-active' : pageSize === 50}" ng-click="setPagination({pageSize: 50})" type="button" class="btn">50件</button>
+                    <button ng-class="{'btn-active' : pageSize === 100}" ng-click="setPagination({pageSize: 100})" type="button" class="btn">100件</button>
+                </span>
+                <span class="h5 text-right inline-block"><strong>{{pageSize * currentPage < totalItems ? pageSize * currentPage : totalItems}}/{{totalItems}}件</strong></span>
+                <span class="inline-block">
+                    <a class="btn btn-primary" ng-click="add()">登録</a>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-bordered fixheader-table">
+                        <thead compile="tableHeader"></thead>
+                        <tbody compile="tableContent"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalUpdate" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <div class="modal-body">
+                <form name="frmDisplaylayout">
+                    <div class="listMainSub4010-inner">
+                        <div class="field clearfix">
+                            <div class="field-table">
+                                <table class="table table-bordered">
+                                    <tbody compile="formEdit">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" ng-click="saveUpsert()" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">戻る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model reset password -->
+<div id="modalResetPassword" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Reset Password</h4>
+            </div>
+            <div class="modal-body">
+                <form name="frmDisplaylayout">
+                    <div class="listMainSub4010-inner">
+                        <div class="field clearfix">
+                            <div class="field-table">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr class="ng-scope">
+                                            <th class="bg-color-grey th-width-1">パスワード</th> 
+                                            <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" type="password" ng-model="rspassword.password"></td>
+                                        </tr>
+                                        <tr class="ng-scope">
+                                            <th class="bg-color-grey th-width-1">再度入力</th> 
+                                            <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" type="password" ng-model="rspassword.password_confirm"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="text-center" style="padding-top: 10px;">
+                            <button type="button" ng-click="resetPassword()" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">戻る</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- Modal add new employee -->
+<div id="modalAddEmployee" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <div class="modal-body">
+                <form name="frmDisplaylayout">
+                    <div class="listMainSub4010-inner">
+                        <div class="field clearfix">
+                            <div class="field-table">
+                                <table class="table table-bordered">
+                                    <!-- <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">社員ID</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.emp_id"></td>
+                                    </tr> -->
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">氏名</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.emp_nm"></td>
+                                    </tr>
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">カナ名</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.emp_kana_nm"></td>
+                                    </tr>
+                                    <!-- <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">社員区分コード</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.emp_type_cd"></td>
+                                    </tr> -->
+                                    <!-- <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">所属部門コード</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.aff_dept_cd"></td>
+                                    </tr> -->
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">システム業務役割</th> 
+                                        <td>
+                                            <select class="form-control ng-pristine ng-valid ng-empty ng-touched" ng-model="current.system_role_cd">
+                                                <option value="">選択してください。</option>
+                                                <option value="{{item.key}}" ng-repeat="item in arrRole">{{item.val}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">代理店</th> 
+                                        <td>
+                                            <select select2 style="width: 100%;" class="form-control ng-pristine ng-valid ng-empty ng-touched" ng-model="current.agency_cd">
+                                                <option value="">選択してください。</option>
+                                                <option value="{{item.agency_cd}}" ng-repeat="item in listAgency">{{item.agency_nm}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">役職コード</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.position_cd"></td>
+                                    </tr> -->
+                                    
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">ユーザーID</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.user_id"></td>
+                                    </tr>
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">メールアドレス</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="text" ng-model="current.email"></td>
+                                    </tr>
+                                    <tr class="ng-scope" ng-if="current.isAdd">
+                                        <th class="bg-color-grey th-width-1">パスワード</th> 
+                                        <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" 
+                                                   type="password" ng-model="current.password"></td>
+                                    </tr>
+                                    <tr class="ng-scope">
+                                        <th class="bg-color-grey th-width-1">有効フラグ</th> 
+                                        <td>
+                                            <select class="form-control ng-pristine ng-valid ng-empty ng-touched" ng-model="current.active">
+                                                <option value="">選択してください。</option>
+                                                <option value="{{item.key}}" ng-repeat="item in arrActive">{{item.val}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" ng-click="saveUpsert()" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">戻る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="modalUpsertDoc" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form name="frmDisplaylayout">
+                    <div class="listMainSub4010-inner">
+                        <div class="field clearfix">
+                            <div class="field-table">
+
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr class="ng-scope">
+                                            <th>資料名</th> 
+                                            <td><input class="form-control ng-pristine ng-untouched ng-valid ng-not-empty" type="text" ng-model="current.doc_name">
+                                            </td>
+                                        </tr>
+                                       
+                                        <tr class="ng-scope">
+                                            <th>ファイル名</th> 
+                                            <td ng-if="mode == 'add'">
+                                                <input type="file" id="file_upload_doc_filename" class="form-control" ng-model="current.file_upload_doc_filename">
+                                            </td>
+                                            <td ng-if="mode == 'edit'">
+                                                {{current.doc_filename}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" ng-click="saveUpsert();" class="btn btn-primary">保存</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-default">戻る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalUpsertAgency" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form name="frmDisplaylayout">
+                        <div class="listMainSub4010-inner">
+                            <div class="field clearfix">
+                                <div class="field-table">
+    
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                            <tr class="ng-scope">
+                                                <th>代理店コード</th> 
+                                                <td><input class="form-control" type="text" ng-model="current.agency_cd">
+                                                </td>
+                                            </tr>
+                                           
+                                            <tr class="ng-scope">
+                                                <th>代理店名</th> 
+                                                <td><input class="form-control" type="text" ng-model="current.agency_nm">
+                                                </td>
+                                            </tr>
+
+                                            <tr class="ng-scope">
+                                                <th>資料</th> 
+                                                <td>
+                                                    <select ng-model="current.agency_doc_list" select2 multiple style="width: 100%;">
+                                                        <option ng-repeat="item in document" value="{{item.id}}">{{item.doc_filename}}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" ng-click="saveUpsert();" class="btn btn-primary">保存</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-default">戻る</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    

@@ -38,6 +38,13 @@ bookApp.config(['$routeProvider', '$locationProvider',
             url: baseURL,
             title: 'Liên Hệ'
         })
+        .when('/signin', {
+            templateUrl: 'themes/default/html/bookstore/signin.html',
+            controller: 'SignPageCtr',
+            module: 'Bookstore',
+            url: baseURL,
+            title: 'Đăng Ký/Đăng Nhập'
+        })
         .otherwise({
             redirectTo: '/'
         });

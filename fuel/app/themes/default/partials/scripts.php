@@ -15,7 +15,8 @@
 			'nav.js',
 			'move-top.js',
 			'easing.js',
-			'nav-hover.js',			
+			'nav-hover.js',		
+			'jquery.flexslider.js',
 			'angular/angular.min.js',
 			'angular/angular-route.min.js',
 			'angular/angular-sanitize.min.js',
@@ -40,11 +41,10 @@
 	});
 	</script>
     <a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
-    
-	  <script defer src="<?php echo \Uri::base(false); ?>assets/js/jquery.flexslider.js"></script>
+    	  
 	  <script type="text/javascript">
 		$(function(){
-		  SyntaxHighlighter.all();
+		  // SyntaxHighlighter.all();
 		});
 		$(window).load(function(){
 		  $('.flexslider').flexslider({
@@ -72,19 +72,19 @@
 		// }
 
 		// // require service
-		// foreach (glob('themes/default/js/service/*.js') as $file) {
-		// 		$arrFile[] = str_replace('themes/default/js/', '', $file);
-		// }
+		foreach (glob('themes/default/js/service/*.js') as $file) {
+				$arrFile[] = str_replace('themes/default/js/', '', $file);
+		}
 
 		// // require filter
-		// foreach (glob('themes/default/js/filter/*.js') as $file) {
-		// 		$arrFile[] = str_replace('themes/default/js/', '', $file);
-		// }
+		foreach (glob('themes/default/js/filter/*.js') as $file) {
+				$arrFile[] = str_replace('themes/default/js/', '', $file);
+		}
 
 		// // require directive
-		// foreach (glob('themes/default/js/directive/*.js') as $file) {
-		// 		$arrFile[] = str_replace('themes/default/js/', '', $file);
-		// }
+		foreach (glob('themes/default/js/directive/*.js') as $file) {
+				$arrFile[] = str_replace('themes/default/js/', '', $file);
+		}
 
 		// require controller
 		foreach (glob('themes/default/js/controller/*.js') as $file) {

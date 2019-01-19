@@ -1,5 +1,5 @@
-bookApp.controller('bookAppController', ['$scope', '$rootScope', '$q', '$location', '$sce',
-function ($scope, $rootScope, $q, $location, $sce) {
+bookApp.controller('bookAppController', ['$scope', '$rootScope', '$q', '$location', '$sce','commonService',
+function ($scope, $rootScope, $q, $location, $sce,commonService) {
   console.log('bookAppController');
   $scope.firstName = 'Linh';
   $scope.lastName = 'Kieu';
@@ -9,8 +9,8 @@ function ($scope, $rootScope, $q, $location, $sce) {
   $rootScope.mode = 'detail';
   $rootScope.unitcdSearch = 1;
   $rootScope.app = {
-      // baseUrl: commonService.baseURL,
-      // imgUrl: commonService.baseURL + 'assets/images/',
+      baseUrl: commonService.baseURL,
+      imgUrl: commonService.baseURL + 'assets/images/',
       userInfo: userInfo,
       class: '',
       callTab: userInfo.main_sale_item_cd,

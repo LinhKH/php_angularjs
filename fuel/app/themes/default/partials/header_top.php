@@ -1,7 +1,7 @@
 <div class="wrap">
 		<div class="header_top">
 			<div class="logo">      
-				<a href="index.html"><img src="<?php echo \Uri::base(false); ?>assets/images/logo.png" alt="" /></a>
+				<a href="<?php echo \Uri::base(false); ?>"><img src="<?php echo \Uri::base(false); ?>assets/images/logo.png" alt="" /></a>
 			</div>
 			  <div class="header_top_right">
 			    <div class="search_box">
@@ -17,7 +17,7 @@
 							</a>
 						</div>
 			      </div>
-		   <div class="login"><a href="login.html">Login</a></div>
+		   <div class="login"><a href="<?php echo \Uri::base(false); ?>signin">Login</a></div>
 		 <div class="clear"></div>
 	 </div>
 	 <div class="clear"></div>

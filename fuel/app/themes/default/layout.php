@@ -22,7 +22,8 @@
 	<div ng-view=""></div>
 	<!-- End Main content -->
 
-  <?php echo $partials['footer'] ?>
+	<?php echo $partials['footer'] ?>
+	<?php echo $partials['modal']; ?>
 	<?php echo $partials['scripts'] ?>
 </body>
 

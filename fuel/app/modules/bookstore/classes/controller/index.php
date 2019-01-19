@@ -22,6 +22,6 @@ class Controller_Index extends Controller_Base_Core {
 
     public function action_index()
     {
-        // die('sdfds');
+        
     }
 }

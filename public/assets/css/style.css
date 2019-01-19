@@ -2475,3 +2475,26 @@ p.terms {
 		padding:4%;
 	}
 }
+
+#listMainSubOfSub{background: rgba(0, 0, 0, 0.4) !important;}
+#listMainSubOfSub .modal-dialog{width: 450px; margin-top: calc(50vh - 200px);}
+#listMainSubOfSub .modal-dialog .modal-body{
+    max-height: 220px; overflow-y: auto;
+}
+#listMainSubOfSub .modal-dialog .modal-body .modal-button{
+    margin-bottom: 20px;
+}
+.listMainSub4110-row .field select{width: 100%; height: 30px; border: 1px solid #ddd; border-radius: 2px;}
+.listMainSub4110-row .field textarea{min-height: 80px; width: 100%;}
+.listMainSub4110-row .field:first-child div{padding-bottom: 5px;}
+.listMainSub4110-row .field:first-child div p{margin-bottom: 2px;}
+.listMainSub4110-row .field:first-child div:last-child{text-align: right;}
+.listMainSub4110-row .field{padding-bottom: 10px;}
+.listMainSub4110-row .field p{font-weight: bold;}
+
+.listMainSub4100-row .required-w{width: 60px; text-align: right;float: right; padding-top: 4px;}
+.listMainSub4100-row .field-table{width: calc(100% - 60px); float: left;}
+.listMainSub4100-row .field-table td:first-child{width: 150px; background: #F6F6F6; vertical-align: middle;}
+.listMainSub4100-row .field-table td:last-child input{width: 100%; border: 0px; outline: 0px;}
+.listMainSub4100-row .field{margin-bottom: 10px;}
+.listMainSub4100-row .field .table-bordered{border: 0px;}

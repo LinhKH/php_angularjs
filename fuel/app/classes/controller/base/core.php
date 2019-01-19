@@ -76,7 +76,7 @@ class Controller_Base_Core extends Controller_Hybrid
                 $this->theme->set_partial('header_bottom', 'partials/header_bottom');
                 // $this->theme->set_partial('left_menu', 'partials/left_menu');
                 // $this->theme->set_partial('top_menu', 'partials/top_menu');
-                // $this->theme->set_partial('modal', 'partials/modal');
+                $this->theme->set_partial('modal', 'partials/modal');
                 $this->theme->set_partial('scripts', 'partials/scripts');
                 View::set_global('theme', $this->theme);
                 Asset::add_path('themes/default/js/', 'js');
