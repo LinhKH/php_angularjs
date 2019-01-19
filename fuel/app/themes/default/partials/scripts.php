@@ -67,9 +67,9 @@
 		}
 
 		// require config
-		// foreach (glob('themes/default/js/config/*.js') as $file) {
-		// 		$arrFile[] = str_replace('themes/default/js/', '', $file);
-		// }
+		foreach (glob('themes/default/js/config/*.js') as $file) {
+				$arrFile[] = str_replace('themes/default/js/', '', $file);
+		}
 
 		// // require service
 		foreach (glob('themes/default/js/service/*.js') as $file) {
