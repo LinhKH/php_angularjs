@@ -86,8 +86,8 @@ class Controller_Base_Rest extends Controller_Rest
     {
         Lang::load('app');
         $this->update_time = date('Y-m-d H:i:s', Date::forge()->get_timestamp());
-        $this->is_login = Model_Base_User::is_login();
-        $this->user = Model_Base_User::getUSerInfo();
+        // $this->is_login = Model_Base_User::is_login();
+        // $this->user = Model_Base_User::getUSerInfo();
         $this->module = strtolower(Request::active()->module);
         $this->controller = strtolower(substr(Inflector::denamespace(Request::active()->controller), 11));
         $this->action = Request::active()->action;

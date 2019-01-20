@@ -17,6 +17,20 @@ bookApp.config(['$routeProvider', '$locationProvider',
           url: baseURL,
           title: 'Sản Phẩm'
         })
+        .when('/product/detail/:id', {
+            templateUrl: 'themes/default/html/bookstore/detail.html',
+            controller: 'ProductPageCtr',
+            module: 'Bookstore',
+            url: baseURL,
+            title: 'Chi Tiết Sản Phẩm'
+        })
+        .when('/product-by-category/:catid', {
+            templateUrl: 'themes/default/html/bookstore/productbycat.html',
+            controller: 'ProductPageCtr',
+            module: 'Bookstore',
+            url: baseURL,
+            title: 'Sản Phẩm Theo Danh Mục'
+        })
         .when('/topbrands', {
             templateUrl: 'themes/default/html/bookstore/topbrands.html',
             controller: 'BrandPageCtr',

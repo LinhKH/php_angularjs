@@ -4,15 +4,13 @@ bookApp.service('commonService', function ($http, $compile, $location) {
   this.commonPopup = $('#listMainSubOfSub');
   
 
-  this.LIST_API = {
-      // Common
-      getCommonMaster: {url: 'api/common/getcommonmst', method: 'POST'},
-      searchOrderMng: {url: 'api/agency/ichiran/searchOrderMng', method: 'POST'},
-      searchOrderMng: {url: 'api/homepage/index/searchOrderMng', method: 'POST'},
-      getAgency: {url: 'api/common/agency/getAgency', method: 'POST'},
+  this.LIST_API = {     
 
-      // Master 
-      listMasterCommon: {url: 'api/master/common/list', method: 'POST'},
+      // Feature Product
+      getFeatureProduct: {url: 'api/bookstore/detail/featureProduct', method: 'POST'},
+      getAllProduct: {url: 'api/bookstore/product/allProduct', method: 'POST'},
+      getProductById: {url: 'api/bookstore/product/getProductById', method: 'POST'},
+      
       // agency management deetail
       uploadOrderMngFile: {url: 'api/agency/detail/uploadOrderMngFile', method: 'POST'},
       uploadInspect: {url: 'api/agency/detail/uploadInspect', method: 'POST'},
