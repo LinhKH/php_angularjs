@@ -12,7 +12,6 @@
 
 </head>
 <body>	
-  <?php //echo $partials['header'] ?>
 	<?php echo $partials['header_top'] ?>
 	<?php echo $partials['menu'] ?>
   <?php echo $partials['header_bottom'] ?>

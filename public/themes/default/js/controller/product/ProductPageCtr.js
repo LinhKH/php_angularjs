@@ -3,10 +3,11 @@ bookApp.controller('ProductPageCtr', ['$scope', '$rootScope', '$q', '$location',
     $scope.productId = $routeParams.id;
 
     $scope.allProduct = [];
+    $scope.allCategory = [];
+
     $scope.totalItems = 0;
     $scope.currentPage = 1;
-    $scope.pageSize = 10;
-
+    $scope.pageSize = 10;    
 
     $scope.getAllProduct = function () {
       $rootScope.startUi();
@@ -36,24 +37,45 @@ bookApp.controller('ProductPageCtr', ['$scope', '$rootScope', '$q', '$location',
       }
     };
 
-    
+    // get Product By ID
     if($scope.productId) {
       commonService.requestFunction('getProductById', {id:$scope.productId}, function (res) {
         if (res.code === 200) {
           $scope.productDetail = res.data;
           if(!$scope.productDetail) {
-            window.location.href = baseURL+'product';
-            
-
-          }
-          
+            window.location.href = baseURL+'product';            
+          }          
         }        
       });
     }
 
+    // get All Category
+    $scope.getAllCategory = function () {
+      $rootScope.startUi();
+      commonService.requestFunction('getAllCategory', {}, function (res) {
+        if (res.code === 200) {
+          $scope.allCategory = res.data;
+        }
+        $rootScope.stopUi();
+      });
+    };
+    
+    $scope.objCart = {current: {},quantity:1};
+    $scope.buyProduct = function() {
+      $scope.objCart.current = angular.copy($scope.productDetail);
+      
+      commonService.requestFunction('updateCart', {data:$scope.objCart}, function (res) {
+        if (res.code === 200) {
+          
+        }
+        $rootScope.stopUi();
+      });
+
+    }
+
     $scope.$on('$viewContentLoaded', function () {
       $scope.getAllProduct();
-      console.log($routeParams.id);
+      $scope.getAllCategory();
       
 
     });

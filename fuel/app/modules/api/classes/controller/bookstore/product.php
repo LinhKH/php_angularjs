@@ -142,4 +142,67 @@ class Controller_Bookstore_Product extends Controller_Base_Rest
         
         return $this->response($this->resp);
     }
+    public function post_getProductByCate()
+    {        
+        try {
+            $val = Validation::forge();
+            $val->add_callable('MyRules');
+
+            $val->add_field('catid', 'catid', []);
+
+            if (!$val->run()) {
+                $this->resp(null, 3000, $val->error_message());
+                return $this->response($this->resp);
+            }
+
+            $arrInput = $val->validated();
+
+            $arrList = DB::select_array(['tbl_product.*'])
+            ->from('tbl_product')
+            ->where('tbl_product.catId', $arrInput['catid'])
+            ->where('tbl_product.del_flg', 0);
+
+            $arrResult = $arrList->execute()->as_array();
+
+            if ($arrResult === false) {
+                throw new Exception();
+            }
+            
+            $this->resp(null, null, $arrResult);
+                        
+        } catch (Exception $e) {
+            Log::write('ERROR', $e->getMessage(), __CLASS__ . ':' . __FUNCTION__ . ':' . $e->getLine());
+            $code = empty($e->getCode()) ? ExceptionCode::E_SYSTEM_ERROR : $e->getCode();
+            $msg = empty($e->getMessage()) ? Lang::get('exception_msg.' . ExceptionCode::E_SYSTEM_ERROR) : $e->getMessage();
+            $this->resp($msg, $code);
+        }
+        
+        return $this->response($this->resp);
+    }
+
+    public function post_updateCart() {
+      try {
+        $val = Validation::forge();
+        $val->add_callable('MyRules');
+
+        $val->add_field('data', 'data', []);
+
+        if (!$val->run()) {
+            $this->resp(null, 3000, $val->error_message());
+            return $this->response($this->resp);
+        }
+
+        $arrInput = $val->validated();
+        // var_dump($arrInput);die;
+
+
+
+
+      } catch (Exception $e) {
+        Log::write('ERROR', $e->getMessage(), __CLASS__ . ':' . __FUNCTION__ . ':' . $e->getLine());
+        $code = empty($e->getCode()) ? ExceptionCode::E_SYSTEM_ERROR : $e->getCode();
+        $msg = empty($e->getMessage()) ? Lang::get('exception_msg.' . ExceptionCode::E_SYSTEM_ERROR) : $e->getMessage();
+        $this->resp($msg, $code);
+      }      
+    }
 }

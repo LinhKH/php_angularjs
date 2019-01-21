@@ -12,75 +12,19 @@
 								<th width="20%">Total Price</th>
 								<th width="10%">Action</th>
 							</tr>
-							<tr>
-								<td>Product Title</td>
-								<td><img ng-src="{{app.imgUrl}}new-pic3.jpg" alt=""/></td>
-								<td>Tk. 20000</td>
+							<tr ng-repeat="item in allCart">
+								<td>{{ item.productName }}</td>
+								<td><img ng-src="{{app.imgUrl}}{{item.image}}" alt=""/></td>
+								<td>Tk. {{item.price}}</td>
 								<td>
 									<form action="" method="post">
-										<input type="number" name="" value="1"/>
-										<input type="submit" name="submit" value="Update"/>
+										<input type="text" ng-model="item.quantity"/>
+										<input type="button" name="submit" ng-click="updateCart($index);" value="Update"/>
 									</form>
 								</td>
-								<td>Tk. 40000</td>
+								<td>{{item.price * item.quantity }}</td>
 								<td><a href="">X</a></td>
 							</tr>
-							
-							<tr>
-								<td>Product Title</td>
-								<td><img ng-src="{{app.imgUrl}}new-pic3.jpg" alt=""/></td>
-								<td>Tk. 20000</td>
-								<td>
-									<form action="" method="post">
-										<input type="number" name="" value="1"/>
-										<input type="submit" name="submit" value="Update"/>
-									</form>
-								</td>
-								<td>Tk. 40000</td>
-								<td><a href="">X</a></td>
-							</tr>
-							
-							<tr>
-								<td>Product Title</td>
-								<td><img src="images/new-pic3.jpg" alt=""/></td>
-								<td>Tk. 20000</td>
-								<td>
-									<form action="" method="post">
-										<input type="number" name="" value="1"/>
-										<input type="submit" name="submit" value="Update"/>
-									</form>
-								</td>
-								<td>Tk. 40000</td>
-								<td><a href="">X</a></td>
-							</tr>
-							<tr>
-								<td>Product Title</td>
-								<td><img src="images/new-pic3.jpg" alt=""/></td>
-								<td>Tk. 20000</td>
-								<td>
-									<form action="" method="post">
-										<input type="number" name="" value="1"/>
-										<input type="submit" name="submit" value="Update"/>
-									</form>
-								</td>
-								<td>Tk. 40000</td>
-								<td><a href="">X</a></td>
-							</tr>
-							
-							<tr>
-								<td>Product Title</td>
-								<td><img ng-src="{{app.imgUrl}}new-pic3.jpg" alt=""/></td>
-								<td>Tk. 20000</td>
-								<td>
-									<form action="" method="post">
-										<input type="number" name="" value="1"/>
-										<input type="submit" name="submit" value="Update"/>
-									</form>
-								</td>
-								<td>Tk. 40000</td>
-								<td><a href="">X</a></td>
-							</tr>
-							
 						</table>
 						<table style="float:right;text-align:left;" width="40%">
 							<tr>
@@ -99,10 +43,10 @@
 					</div>
 					<div class="shopping">
 						<div class="shopleft">
-							<a href="index.html"> <img ng-src="{{app.imgUrl}}shop.png" alt="" /></a>
+							<a href="{{app.baseUrl}}"> <img ng-src="{{app.imgUrl}}shop.png" alt="" /></a>
 						</div>
 						<div class="shopright">
-							<a href="login.html"> <img ng-src="{{app.imgUrl}}check.png" alt="" /></a>
+							<a href="{{app.baseUrl}}signin"> <img ng-src="{{app.imgUrl}}check.png" alt="" /></a>
 						</div>
 					</div>
     	</div>  	

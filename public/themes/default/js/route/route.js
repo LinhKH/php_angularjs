@@ -24,9 +24,9 @@ bookApp.config(['$routeProvider', '$locationProvider',
             url: baseURL,
             title: 'Chi Tiết Sản Phẩm'
         })
-        .when('/product-by-category/:catid', {
+        .when('/product-by-category/:catname/:catid', {
             templateUrl: 'themes/default/html/bookstore/productbycat.html',
-            controller: 'ProductPageCtr',
+            controller: 'CategoryPageCtr',
             module: 'Bookstore',
             url: baseURL,
             title: 'Sản Phẩm Theo Danh Mục'

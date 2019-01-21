@@ -8,8 +8,13 @@ bookApp.service('commonService', function ($http, $compile, $location) {
 
       // Feature Product
       getFeatureProduct: {url: 'api/bookstore/detail/featureProduct', method: 'POST'},
+      getNewProduct: {url: 'api/bookstore/detail/newProduct', method: 'POST'},
       getAllProduct: {url: 'api/bookstore/product/allProduct', method: 'POST'},
+      getAllCart: {url: 'api/bookstore/cart/getAllCart', method: 'POST'},
+      getAllCategory: {url: 'api/bookstore/category/allCategory', method: 'POST'},
       getProductById: {url: 'api/bookstore/product/getProductById', method: 'POST'},
+      updateCart: {url: 'api/bookstore/cart/updateCart', method: 'POST'},
+      getProductByCatId: {url: 'api/bookstore/product/getProductByCate', method: 'POST'},
       
       // agency management deetail
       uploadOrderMngFile: {url: 'api/agency/detail/uploadOrderMngFile', method: 'POST'},
