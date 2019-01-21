@@ -80,17 +80,30 @@ class Controller_Bookstore_Cart extends Controller_Base_Rest
             return $this->response($this->resp);
         }
 
-        $arrInput = $val->validated();
-        // var_dump($arrInput);die;
+        $arrInput = $val->validated();        
+        $arrData = $arrInput['data'];
+        $arrCartUpdate = [
+          'sId' => isset($arrData['sId']) ? $arrData['sId'] : null,
+          'productId' => isset($arrData['productId']) ? $arrData['productId'] : null,
+          'productName' => isset($arrData['productName']) ? $arrData['productName'] : null,
+          'price' => isset($arrData['price']) ? $arrData['price'] : null,
+          'quantity' => isset($arrData['quantity']) ? $arrData['quantity'] : null,
+          'price' => isset($arrData['price']) ? $arrData['price'] : null,
+        ];
 
-
-
+        if(!empty($arrData['cartId'])) {
+          if (!Model_Base_Core::update('Model_TblCart', $arrData['cartId'], $arrCartUpdate)) {
+            throw new Exception();
+          }
+        }
+        $this->resp();
 
       } catch (Exception $e) {
         Log::write('ERROR', $e->getMessage(), __CLASS__ . ':' . __FUNCTION__ . ':' . $e->getLine());
         $code = empty($e->getCode()) ? ExceptionCode::E_SYSTEM_ERROR : $e->getCode();
         $msg = empty($e->getMessage()) ? Lang::get('exception_msg.' . ExceptionCode::E_SYSTEM_ERROR) : $e->getMessage();
         $this->resp($msg, $code);
-      }      
+      }     
+      return $this->response($this->resp);
     }
 }

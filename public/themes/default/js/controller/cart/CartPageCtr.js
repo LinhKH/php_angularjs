@@ -18,10 +18,9 @@ bookApp.controller('CartPageCtr', ['$scope', '$rootScope', '$q', '$location', '$
     };
 
     $scope.updateCart = function(index) {
-      
-      commonService.requestFunction('getAllCart', params, function (res) {
+      commonService.requestFunction('updateCart', {data: $scope.allCart[index]}, function (res) {
         if (res.code === 200) {
-          $scope.allCart = res.data;
+          // $scope.allCart = res.data;
         }
         $rootScope.stopUi();
       });
