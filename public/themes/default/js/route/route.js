@@ -1,5 +1,6 @@
 bookApp.config(['$routeProvider', '$locationProvider',
     function ($routeProvider, $locationProvider) {
+        //colorCustomizations
         var baseURL = $('base').attr('href');
         $routeProvider.when('/logout', {
             controller: 'LogoutCtrl',

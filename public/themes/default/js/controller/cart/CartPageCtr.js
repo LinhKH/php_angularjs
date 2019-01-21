@@ -17,6 +17,18 @@ bookApp.controller('CartPageCtr', ['$scope', '$rootScope', '$q', '$location', '$
       });
     };
 
+    $scope.subTotal = function(){
+      $scope.total = 0;
+      for(var i = 0; i<$scope.allCart.length; i++) {
+        var item = $scope.allCart[i];
+        $scope.total = $scope.total + (item.quantity * item.price);
+      }
+      return $scope.total;
+    };
+    $scope.grandTotal = function() {
+      return Math.round($scope.total + $scope.total*10/100)
+    }
+
     $scope.updateCart = function(index) {
       commonService.requestFunction('updateCart', {data: $scope.allCart[index]}, function (res) {
         if (res.code === 200) {
