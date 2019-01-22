@@ -30,6 +30,7 @@ bookApp.controller('CartPageCtr', ['$scope', '$rootScope', '$q', '$location', '$
     }
 
     $scope.updateCart = function(index) {
+      $rootScope.startUi();
       commonService.requestFunction('updateCart', {data: $scope.allCart[index]}, function (res) {
         if (res.code === 200) {
           // $scope.allCart = res.data;
@@ -37,6 +38,30 @@ bookApp.controller('CartPageCtr', ['$scope', '$rootScope', '$q', '$location', '$
         $rootScope.stopUi();
       });
     }
+
+    $scope.confirmDelete = function($item) {
+      $scope.allCart.cartId = $item.cartId;
+      commonService.commonPopupOpen($scope, {
+        title: 'Thông báo',
+        content: 'Bạn có chắc muốn xóa ？',
+        button: [
+            {title: 'Đồng ý', _function: 'deleteItemCart()'},
+            {title: 'Hủy bỏ', _function: 'commonPopupClose()'}
+        ]
+      });
+    };    
+    
+    $scope.deleteItemCart = function () {
+      $rootScope.startUi();
+      
+      commonService.requestFunction('deleteCart',{id: $scope.allCart.cartId}, function(res) {
+        if (res.code === 200) {
+          $scope.getAllCart();
+        }
+        $rootScope.stopUi();
+      })
+      $rootScope.commonPopupClose();
+    };
 
     $scope.$on('$viewContentLoaded', function () {
       $scope.getAllCart();

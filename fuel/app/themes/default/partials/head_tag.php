@@ -2,6 +2,7 @@
 echo \Asset::css([
     'style.css',
     'menu.css',
+    'bootstrap.min.css',
     'flexslider.css',
 ]);
 ?>

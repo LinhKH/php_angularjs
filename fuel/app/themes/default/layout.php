@@ -7,7 +7,10 @@
 	<meta name="description" content="Bookstore">
 	<meta name="author" content="Bookstore">
 	<meta name="keywords" content="Bookstore">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <!-- Latest compiled and minified CSS & JS -->
+  
 	<?php echo $partials['head_tag']; ?>
 
 </head>

@@ -1,13 +1,15 @@
-bookApp.controller('ContactPageCtr', ['$scope', '$rootScope', '$q', '$location', '$sce',
-  function ($scope, $rootScope, $q, $location, $sce) {
-    
-    $scope.totalItems = 0;
-    $scope.currentPage = 1;
-    $scope.pageSize = 10;
+bookApp.controller('ContactPageCtr', ['$scope', '$rootScope', '$q', '$location', '$sce','commonService',
+  function ($scope, $rootScope, $q, $location, $sce, commonService) {
 
-    $scope.searchInput = {};
+    $scope.contact = {};
 
-
+    $scope.sendMailContact = function() {
+      commonService.requestFunction('sendMailContact', {data: angular.copy($scope.contact)}, function (res) {
+            if (res.code === 200) {
+                commonService.showAlert(res.message);
+            }
+        });       
+    }
 
     $scope.$on('$viewContentLoaded', function () {
       console.log('ContactPageCtr');

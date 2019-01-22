@@ -1,4 +1,4 @@
-<!-- <div id="listMainSubOfSub" class="modal fade" id="modal-id">
+<div id="listMainSubOfSub" class="modal fade" id="modal-id">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -8,7 +8,7 @@
       <div class="modal-body">
         <div class="listMainSub4110-inner">
             <div class="listMainSub4110-row">
-                <div class="field content-popup" style="padding-top: 10px; padding-bottom: 0px; border-top: 1px solid #ddd;">
+                <div class="field content-popup" style="padding-top: 10px; padding-bottom: 0px;">
                 </div>
             </div>
             
@@ -19,4 +19,5 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>
+

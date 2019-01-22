@@ -6,21 +6,22 @@ bookApp.service('commonService', function ($http, $compile, $location) {
 
   this.LIST_API = {     
 
-      // Feature Product
+      // api home
       getFeatureProduct: {url: 'api/bookstore/detail/featureProduct', method: 'POST'},
       getNewProduct: {url: 'api/bookstore/detail/newProduct', method: 'POST'},
-      getAllProduct: {url: 'api/bookstore/product/allProduct', method: 'POST'},
-      getAllCart: {url: 'api/bookstore/cart/getAllCart', method: 'POST'},
-      getAllCategory: {url: 'api/bookstore/category/allCategory', method: 'POST'},
-      getProductById: {url: 'api/bookstore/product/getProductById', method: 'POST'},
-      updateCart: {url: 'api/bookstore/cart/updateCart', method: 'POST'},
-      getProductByCatId: {url: 'api/bookstore/product/getProductByCate', method: 'POST'},
-      
-      // agency management deetail
-      uploadOrderMngFile: {url: 'api/agency/detail/uploadOrderMngFile', method: 'POST'},
-      uploadInspect: {url: 'api/agency/detail/uploadInspect', method: 'POST'},
-      uploadAccept: {url: 'api/agency/detail/uploadAccept', method: 'POST'},
 
+      getAllCategory: {url: 'api/bookstore/category/allCategory', method: 'POST'},
+      // api product
+      getAllProduct: {url: 'api/bookstore/product/allProduct', method: 'POST'},
+      getProductById: {url: 'api/bookstore/product/getProductById', method: 'POST'},
+      getProductByCatId: {url: 'api/bookstore/product/getProductByCate', method: 'POST'},
+      // api cart
+      getAllCart: {url: 'api/bookstore/cart/getAllCart', method: 'POST'},
+      updateCart: {url: 'api/bookstore/cart/updateCart', method: 'POST'},
+      deleteCart: {url: 'api/bookstore/cart/deleteCart', method: 'POST'},
+      // api contact
+      sendMailContact: {url: 'api/bookstore/contact/sendMailContact', method: 'POST'},
+      
   };
 
   this.requestFunction = function (api, params, callback) {
@@ -90,8 +91,8 @@ bookApp.service('commonService', function ($http, $compile, $location) {
       obj.find('.content-popup').html($config.content);
       var btn = '';
       angular.forEach($config.button, function (v, k) {
-          var temp = btnTemplate.replace('{function}', v._function).replace('{title}', v.title).replace('{class}', v.class);
-          btn += temp;
+        var temp = btnTemplate.replace('{function}', v._function).replace('{title}', v.title).replace('{class}', v.class);
+        btn += temp;
       });
       obj.find('.modal-button').html(btn);
       $compile(obj)($scope);

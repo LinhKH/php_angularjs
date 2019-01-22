@@ -43,6 +43,11 @@ bookApp.controller('bookAppController', ['$scope', '$rootScope', '$q', '$locatio
         blockUI.start();
     };
 
+    // close common popup
+    $rootScope.commonPopupClose = function () {
+      commonService.commonPopupClose();
+    };
+
 
     $scope.$on('$viewContentLoaded', function () {
       setTimeout(function () {

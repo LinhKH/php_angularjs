@@ -43,8 +43,7 @@ class Controller_Bookstore_Cart extends Controller_Base_Rest
     //     parent::router($resource, $arguments);
     // }
     
-    public function post_getAllCart()
-    {        
+    public function post_getAllCart() {
         try {            
             $arrList = DB::select_array(['*']);
             $arrList->from('tbl_cart');
@@ -104,6 +103,32 @@ class Controller_Bookstore_Cart extends Controller_Base_Rest
         $msg = empty($e->getMessage()) ? Lang::get('exception_msg.' . ExceptionCode::E_SYSTEM_ERROR) : $e->getMessage();
         $this->resp($msg, $code);
       }     
+      return $this->response($this->resp);
+    }
+
+    public function post_deleteCart() {
+      try {
+        $val = Validation::forge();
+        $val->add_callable('MyRules');
+
+        $val->add_field('id', 'id', []);
+
+        if (!$val->run()) {
+            $this->resp(null, 3000, $val->error_message());
+            return $this->response($this->resp);
+        }
+
+        $arrInput = $val->validated();
+        if (!Model_Base_Core::delete('Model_TblCart', $arrInput['id'])) {
+          throw new Exception();
+        }
+        $this->resp();
+      } catch(Exception $e) {
+        Log::write('ERROR', $e->getMessage(), __CLASS__ . ':' . __FUNCTION__ . ':' . $e->getLine());
+        $code = empty($e->getCode()) ? ExceptionCode::E_SYSTEM_ERROR : $e->getCode();
+        $msg = empty($e->getMessage()) ? Lang::get('exception_msg.' . ExceptionCode::E_SYSTEM_ERROR) : $e->getMessage();
+        $this->resp($msg, $code);
+      }
       return $this->response($this->resp);
     }
 }

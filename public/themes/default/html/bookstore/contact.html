@@ -16,22 +16,22 @@
 					    <form>
 					    	<div>
 						    	<span><label>NAME</label></span>
-						    	<span><input type="text" value=""></span>
+						    	<span><input type="text" ng-model="contact.name" value=""></span>
 						    </div>
 						    <div>
 						    	<span><label>E-MAIL</label></span>
-						    	<span><input type="text" value=""></span>
+						    	<span><input type="text" ng-model="contact.email" value=""></span>
 						    </div>
 						    <div>
 						     	<span><label>MOBILE.NO</label></span>
-						    	<span><input type="text" value=""></span>
+						    	<span><input type="text" ng-model="contact.mobile" telno-num-only value=""></span>
 						    </div>
 						    <div>
 						    	<span><label>SUBJECT</label></span>
-						    	<span><textarea> </textarea></span>
+						    	<span><textarea ng-model="contact.subject"></textarea></span>
 						    </div>
 						   <div>
-						   		<span><input type="submit" value="SUBMIT"></span>
+						   		<span><input type="button" ng-click="sendMailContact();" value="SUBMIT"></span>
 						  </div>
 					    </form>
 				  </div>
