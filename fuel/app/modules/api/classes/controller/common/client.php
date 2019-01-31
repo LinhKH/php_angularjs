@@ -42,14 +42,14 @@ class Controller_Common_Client extends Controller_Base_Rest
         return $response;
     }
 
-    // public function router($resource, $arguments)
-    // {
-    //     if (!$this->is_login) {
-    //         $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_APP_ERROR_PERMISSION), ExceptionCode::E_APP_ERROR_PERMISSION);
-    //         return $this->response($this->resp);
-    //     }
-    //     parent::router($resource, $arguments);
-    // }
+    public function router($resource, $arguments)
+    {
+        if (!$this->is_login) {
+            $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_APP_ERROR_PERMISSION), ExceptionCode::E_APP_ERROR_PERMISSION);
+            return $this->response($this->resp);
+        }
+        parent::router($resource, $arguments);
+    }
 
 
     public function get_getDetailClientPic()

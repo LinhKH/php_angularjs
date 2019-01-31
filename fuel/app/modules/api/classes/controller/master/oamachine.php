@@ -25,19 +25,19 @@ class Controller_Master_Oamachine extends Controller_Base_Rest
         return $response;
     }
 
-    // public function router($resource, $arguments)
-    // {
-    //     if (!$this->is_login) {
-    //         $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_APP_ERROR_PERMISSION), ExceptionCode::E_APP_ERROR_PERMISSION);
-    //         return $this->response($this->resp);
-    //     }
-    //     $user = $this->user;
-    //     if($user['system_role_cd'] < 50) {
-    //         $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_NOT_HAVE_PERMISSION), ExceptionCode::E_NOT_HAVE_PERMISSION);
-    //         return $this->response($this->resp);
-    //     }
-    //     parent::router($resource, $arguments);
-    // }
+    public function router($resource, $arguments)
+    {
+        if (!$this->is_login) {
+            $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_APP_ERROR_PERMISSION), ExceptionCode::E_APP_ERROR_PERMISSION);
+            return $this->response($this->resp);
+        }
+        $user = $this->user;
+        if($user['system_role_cd'] < 50) {
+            $this->resp(Lang::get('exception_msg.' . ExceptionCode::E_NOT_HAVE_PERMISSION), ExceptionCode::E_NOT_HAVE_PERMISSION);
+            return $this->response($this->resp);
+        }
+        parent::router($resource, $arguments);
+    }
 
     /**
      * 

@@ -40,9 +40,9 @@ class Controller_Auth extends Controller_Base_Rest
             $val->add_field('user_id', $userIdLabel, 'required|min_length[2]|max_length[255]|valid_user_id');
             $val->add_field('password', $passwordLabel, 'required|max_length[50]');
             if (!$val->run()) {
-              //  e $this->resp(null, ExceptionCode::E_VALIDATION_ERROR_FIELD, $val->error_message());
-              //   rturn $this->response($this->resp);
-                throw new Exception(Lang::get('exception_msg.' . 'LOGIN_FAIL'), ExceptionCode::E_VALIDATION_ERROR_FIELD);
+               $this->resp(null, ExceptionCode::E_VALIDATION_ERROR_FIELD, $val->error_message());
+                return $this->response($this->resp);
+                // throw new Exception(Lang::get('exception_msg.' . 'LOGIN_FAIL'), ExceptionCode::E_VALIDATION_ERROR_FIELD);
             }
             
             $userId = $val->validated('user_id');

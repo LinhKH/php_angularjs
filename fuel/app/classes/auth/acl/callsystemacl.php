@@ -7,7 +7,7 @@ class Auth_Acl_CallSystemAcl extends \Auth_Acl_Driver
 
     public static function _init()
     {
-        static::$_valid_roles = array_keys(\Config::get('callsystemauth.roles'));
+        static::$_valid_roles = array_keys(\Config::get('baseauth.roles'));
     }
 
     public function roles()

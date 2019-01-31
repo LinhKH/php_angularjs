@@ -1,12 +1,12 @@
 <?php
 
 /**
- * CallSystemAuth basic login driver
+ * Baseauth basic login driver
  *
  * @package     Fuel
  * @subpackage  Auth
  */
-class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
+class Auth_Login_BaseAuth extends \Auth_Login_Driver
 {
 
     /**
@@ -15,18 +15,18 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
     public static function _init()
     {
 
-        \Config::load('callsystemauth', true);
+        \Config::load('baseauth', true);
 
         // setup the remember-me session object if needed
-        if (\Config::get('callsystemauth.remember_me.enabled', false)) {
+        if (\Config::get('baseauth.remember_me.enabled', false)) {
             static::$remember_me = \Session::forge([
                     'driver' => 'cookie',
                     'cookie' => [
-                        'cookie_name' => \Config::get('callsystemauth.remember_me.cookie_name', 'rmcookie'),
+                        'cookie_name' => \Config::get('baseauth.remember_me.cookie_name', 'rmcookie'),
                     ],
                     'encrypt_cookie' => true,
                     'expire_on_close' => false,
-                    'expiration_time' => \Config::get('callsystemauth.remember_me.expiration', 86400 * 31),
+                    'expiration_time' => \Config::get('baseauth.remember_me.expiration', 86400 * 31),
             ]);
         }
     }
@@ -69,10 +69,10 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
         // only worth checking if there's both a user_id and login-hash
         if (!empty($user_id) and ! empty($login_hash)) {
             if (is_null($this->user) or ( $this->user['user_id'] != $user_id)) {
-                $this->user = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+                $this->user = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
                         ->where('user_id', '=', $user_id)
-                        ->from(\Config::get('callsystemauth.table_name'))
-                        ->execute(\Config::get('callsystemauth.db_connection'))->current();
+                        ->from(\Config::get('baseauth.table_name'))
+                        ->execute(\Config::get('baseauth.db_connection'))->current();
                 if (empty($this->user)) {
                     \Session::delete('user_id');
                     \Session::delete('login_hash');
@@ -81,7 +81,7 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
                 $this->expendInformation();
             }
             // return true when login was verified, and either the hash matches or multiple logins are allowed
-            if ($this->user and ( \Config::get('callsystemauth.multiple_logins', false) or $this->user['login_hash'] === $login_hash)) {
+            if ($this->user and ( \Config::get('baseauth.multiple_logins', false) or $this->user['login_hash'] === $login_hash)) {
                 return true;
             }
         }
@@ -92,7 +92,7 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
         }
 
         // no valid login when still here, ensure empty session and optionally set guest_login
-        $this->user = \Config::get('callsystemauth.guest_login', true) ? static::$guest_login : false;
+        $this->user = \Config::get('baseauth.guest_login', true) ? static::$guest_login : false;
         \Session::delete('user_id');
         \Session::delete('login_hash');
 
@@ -106,20 +106,20 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
      */
     public function validate_user($user_id = '', $password = '')
     {
-        $user_id = trim($user_id) ? : trim(\Input::post(\Config::get('callsystemauth.username_post_key', 'user_id')));
-        $password = trim($password) ? : trim(\Input::post(\Config::get('callsystemauth.password_post_key', 'password')));
+        $user_id = trim($user_id) ? : trim(\Input::post(\Config::get('baseauth.username_post_key', 'user_id')));
+        $password = trim($password) ? : trim(\Input::post(\Config::get('baseauth.password_post_key', 'password')));
 
         if (empty($user_id) or empty($password)) {
             return false;
         }
 
         $password = $this->hash_password($password);
-        $user = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+        $user = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
                 ->where('user_id', '=', $user_id)
                 ->where('password', '=', $password)
                 ->where('active', '=', 0)
-                ->from(\Config::get('callsystemauth.table_name'))
-                ->execute(\Config::get('callsystemauth.db_connection'))->current();
+                ->from(\Config::get('baseauth.table_name'))
+                ->execute(\Config::get('baseauth.db_connection'))->current();
 
         return $user ? : false;
     }
@@ -146,7 +146,7 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
 
         \Session::set('user_id', $this->user['user_id']);
         \Session::set('login_hash', $this->create_login_hash());
-        \Session::set('user_manage_unit_cd', $this->user['manage_unit_cd']);
+        // \Session::set('user_manage_unit_cd', $this->user['manage_unit_cd']);
         \Session::instance()->rotate();
 
         return true;
@@ -155,48 +155,48 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
     private function expendInformation()
     {
         // get division
-        $org = \DB::select('id', \DB::expr('parent_org_cd as use_div_cd'), 'main_sale_item_cd', 'apo_disp_dept_cd', 'unit_cd', 'default_sales_dept_cd')
-                ->where('org_cd', '=', $this->user['aff_dept_cd'])
-                ->where('org_type_cd', '=', 2)
-                ->where('del_flg', '=', 0)
-                ->from(\Model_MOrg::table())
-                ->execute(\Config::get('callsystemauth.db_connection'))->current();
-        $systemRole = \DB::select('*')
-                ->where('system_role_cd', '=', $this->user['system_role_cd'])
-                ->where('del_flg', '=', 0)
-                ->from(\Model_MSysRole::table())
-                ->execute(\Config::get('callsystemauth.db_connection'))->current();
-        $menuPriv = \DB::select('*')
-                ->where('id', '=', $this->user['menu_priv_id'])
-                ->where('del_flg', '=', 0)
-                ->from(\Model_MMenuPriv::table())
-                ->execute(\Config::get('callsystemauth.db_connection'))->current();
+        // $org = \DB::select('id', \DB::expr('parent_org_cd as use_div_cd'), 'main_sale_item_cd', 'apo_disp_dept_cd', 'unit_cd', 'default_sales_dept_cd')
+        //         ->where('org_cd', '=', $this->user['aff_dept_cd'])
+        //         ->where('org_type_cd', '=', 2)
+        //         ->where('del_flg', '=', 0)
+        //         ->from(\Model_MOrg::table())
+        //         ->execute(\Config::get('baseauth.db_connection'))->current();
+        // $systemRole = \DB::select('*')
+        //         ->where('system_role_cd', '=', $this->user['system_role_cd'])
+        //         ->where('del_flg', '=', 0)
+        //         ->from(\Model_MSysRole::table())
+        //         ->execute(\Config::get('baseauth.db_connection'))->current();
+        // $menuPriv = \DB::select('*')
+        //         ->where('id', '=', $this->user['menu_priv_id'])
+        //         ->where('del_flg', '=', 0)
+        //         ->from(\Model_MMenuPriv::table())
+        //         ->execute(\Config::get('baseauth.db_connection'))->current();
 
         // expend information division_cd department_cd
-        $this->user['main_sale_item_cd'] = $org['main_sale_item_cd'];
-        $this->user['use_div_cd'] = $org['use_div_cd'];
-        $this->user['division_cd'] = $org['use_div_cd'];
-        $this->user['use_dept_cd'] = $this->user['aff_dept_cd'];
-        $this->user['department_cd'] = $this->user['aff_dept_cd'];
-        $this->user['apo_disp_dept_cd'] = $org['apo_disp_dept_cd'];
-        $this->user['default_sales_dept_cd'] = $org['default_sales_dept_cd'];
-        if (!empty($this->user['default_sales_dept_cd'])) {
-            $sales_div_cd = Model_Base_Core::getOne('Model_MOrg', [
-                    'from_cache' => true,
-                    'select' => ['parent_org_cd'],
-                    'where' => [
-                        'org_cd' => $this->user['default_sales_dept_cd'],
-                        'org_type_cd' => 2,
-                        'del_flg' => 0,
-                    ]
-            ]);
-        }
-        $this->user['default_sales_div_cd'] = empty($sales_div_cd['parent_org_cd']) ? null : $sales_div_cd['parent_org_cd'];
-        $this->user['unit_cd'] = $org['unit_cd'];
+        // $this->user['main_sale_item_cd'] = $org['main_sale_item_cd'];
+        // $this->user['use_div_cd'] = $org['use_div_cd'];
+        // $this->user['division_cd'] = $org['use_div_cd'];
+        // $this->user['use_dept_cd'] = $this->user['aff_dept_cd'];
+        // $this->user['department_cd'] = $this->user['aff_dept_cd'];
+        // $this->user['apo_disp_dept_cd'] = $org['apo_disp_dept_cd'];
+        // $this->user['default_sales_dept_cd'] = $org['default_sales_dept_cd'];
+        // if (!empty($this->user['default_sales_dept_cd'])) {
+        //     $sales_div_cd = Model_Base_Core::getOne('Model_MOrg', [
+        //             'from_cache' => true,
+        //             'select' => ['parent_org_cd'],
+        //             'where' => [
+        //                 'org_cd' => $this->user['default_sales_dept_cd'],
+        //                 'org_type_cd' => 2,
+        //                 'del_flg' => 0,
+        //             ]
+        //     ]);
+        // }
+        // $this->user['default_sales_div_cd'] = empty($sales_div_cd['parent_org_cd']) ? null : $sales_div_cd['parent_org_cd'];
+        $this->user['unit_cd'] = null;
         $this->user['use_emp_id'] = $this->user['emp_id'];
-        $this->user['sys_role'] = $systemRole;
-        $this->user['role_lv_cd'] = $systemRole['role_lv_cd'];
-        $this->user['menu_priv'] = $menuPriv;
+        $this->user['sys_role'] = null;
+        $this->user['role_lv_cd'] = null;
+        $this->user['menu_priv'] = isset($menuPriv) ? $menuPriv : null;
     }
 
     /**
@@ -211,16 +211,16 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
             return false;
         }
 
-        $this->user = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+        $this->user = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
             ->where_open()
             ->where('id', '=', $user_id)
             ->where_close()
-            ->from(\Config::get('callsystemauth.table_name'))
-            ->execute(\Config::get('callsystemauth.db_connection'))
+            ->from(\Config::get('baseauth.table_name'))
+            ->execute(\Config::get('baseauth.db_connection'))
             ->current();
 
         if ($this->user == false) {
-            // $this->user = \Config::get('callsystemauth.guest_login', true) ? static::$guest_login : false;
+            // $this->user = \Config::get('baseauth.guest_login', true) ? static::$guest_login : false;
             \Session::delete('user_id');
             \Session::delete('login_hash');
             return false;
@@ -247,7 +247,7 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
      */
     public function logout()
     {
-        // $this->user = \Config::get('callsystemauth.guest_login', true) ? static::$guest_login : false;
+        // $this->user = \Config::get('baseauth.guest_login', true) ? static::$guest_login : false;
         \Session::delete('user_id');
         \Session::delete('login_hash');
         \Session::delete('user_manage_unit_cd');
@@ -273,10 +273,10 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
             throw new \SimpleUserUpdateException('user_id or password is not given', 1);
         }
 
-        $same_users = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+        $same_users = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
             ->where('user_id', '=', $user_id)
-            ->from(\Config::get('callsystemauth.table_name'))
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->from(\Config::get('baseauth.table_name'))
+            ->execute(\Config::get('baseauth.db_connection'));
 
         if ($same_users->count() > 0) {
             throw new \SimpleUserUpdateException('user_id already exists', 3);
@@ -290,9 +290,9 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
             'login_hash' => '',
             'created_at' => \Date::forge()->get_timestamp(),
         ];
-        $result = \DB::insert(\Config::get('callsystemauth.table_name'))
+        $result = \DB::insert(\Config::get('baseauth.table_name'))
             ->set($user)
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->execute(\Config::get('baseauth.db_connection'));
 
         return ($result[1] > 0) ? $result[0] : false;
     }
@@ -308,10 +308,10 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
     public function update_user($values, $user_id = null)
     {
         $user_id = $user_id ? : $this->user['user_id'];
-        $current_values = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+        $current_values = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
             ->where('user_id', '=', $user_id)
-            ->from(\Config::get('callsystemauth.table_name'))
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->from(\Config::get('baseauth.table_name'))
+            ->execute(\Config::get('baseauth.db_connection'));
 
         if (empty($current_values)) {
             throw new \SimpleUserUpdateException('user_id not found', 4);
@@ -346,17 +346,17 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
 
         $update['updated_at'] = \Date::forge()->get_timestamp();
 
-        $affected_rows = \DB::update(\Config::get('callsystemauth.table_name'))
+        $affected_rows = \DB::update(\Config::get('baseauth.table_name'))
             ->set($update)
             ->where('user_id', '=', $user_id)
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->execute(\Config::get('baseauth.db_connection'));
 
         // Refresh user
         if ($this->user['user_id'] == $user_id) {
-            $this->user = \DB::select_array(\Config::get('callsystemauth.table_columns', ['*']))
+            $this->user = \DB::select_array(\Config::get('baseauth.table_columns', ['*']))
                     ->where('user_id', '=', $user_id)
-                    ->from(\Config::get('callsystemauth.table_name'))
-                    ->execute(\Config::get('callsystemauth.db_connection'))->current();
+                    ->from(\Config::get('baseauth.table_name'))
+                    ->execute(\Config::get('baseauth.db_connection'))->current();
         }
 
         return $affected_rows > 0;
@@ -393,10 +393,10 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
         $new_password = \Str::random('alnum', 8);
         $password_hash = $this->hash_password($new_password);
 
-        $affected_rows = \DB::update(\Config::get('callsystemauth.table_name'))
+        $affected_rows = \DB::update(\Config::get('baseauth.table_name'))
             ->set(['password' => $password_hash])
             ->where('user_id', '=', $user_id)
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->execute(\Config::get('baseauth.db_connection'));
 
         if (!$affected_rows) {
             throw new \SimpleUserUpdateException('Failed to reset password, user was invalid.', 8);
@@ -417,9 +417,9 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
             throw new \SimpleUserUpdateException('Cannot delete user with empty user_id', 9);
         }
 
-        $affected_rows = \DB::delete(\Config::get('callsystemauth.table_name'))
+        $affected_rows = \DB::delete(\Config::get('baseauth.table_name'))
             ->where('user_id', '=', $user_id)
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->execute(\Config::get('baseauth.db_connection'));
 
         return $affected_rows > 0;
     }
@@ -436,12 +436,12 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
         }
 
         $last_login = \Date::forge()->get_timestamp();
-        $login_hash = sha1(\Config::get('callsystemauth.login_hash_salt') . $this->user['user_id'] . $last_login);
+        $login_hash = sha1(\Config::get('baseauth.login_hash_salt') . $this->user['user_id'] . $last_login);
 
-        \DB::update(\Config::get('callsystemauth.table_name'))
+        \DB::update(\Config::get('baseauth.table_name'))
             ->set(['last_login' => $last_login, 'login_hash' => $login_hash])
             ->where('user_id', '=', $this->user['user_id'])
-            ->execute(\Config::get('callsystemauth.db_connection'));
+            ->execute(\Config::get('baseauth.db_connection'));
 
         $this->user['login_hash'] = $login_hash;
 
@@ -550,7 +550,7 @@ class Auth_Login_CallSystemAuth extends \Auth_Login_Driver
      */
     public function guest_login()
     {
-        return \Config::get('callsystemauth.guest_login', true);
+        return \Config::get('baseauth.guest_login', true);
     }
 
 }

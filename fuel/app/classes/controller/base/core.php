@@ -49,9 +49,9 @@ class Controller_Base_Core extends Controller_Hybrid
         $this->controller = strtolower(substr(Inflector::denamespace(Request::active()->controller), 11));
         $this->action = Request::active()->action;  
         if (!empty($this->module) && $this->module != 'bookstore') {
-            // if (!$this->is_login) {
-            //     Response::redirect('/login');
-            // }
+            if (!$this->is_login) {
+                Response::redirect('/login');
+            }
             // $this->template = $this->module . '::' . $this->template;
         }
         
@@ -79,6 +79,7 @@ class Controller_Base_Core extends Controller_Hybrid
                 View::set_global('theme', $this->theme);
                 Asset::add_path('themes/default/js/', 'js');
                 break;
+            case 'master':
             case 'management':
                 $this->theme = Theme::instance();
                 $this->theme->active('main');
