@@ -1,0 +1,266 @@
+<div class="main container-fluid" id="#ichiran">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="clearfix block-1">
+                <div class="row flex-justify-center">
+                    <div class="col-md-10 col-lg-11">
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label class="control-label label-width-4">依頼日</label>
+                                <div class="input-group input-width-1">
+                                    <span class="input-group-addon">
+                                        <span><i class="far fa-calendar-alt"></i></span>
+                                    </span>
+                                    <input type="text" class="form-control" datepicker ng-model="searchInput.req_dt_from">
+                                </div>
+                                <label class="control-label label-width-4 text-center">~</label>
+                                <div class="input-group input-width-1">
+                                    <span class="input-group-addon">
+                                        <span><i class="far fa-calendar-alt"></i></span>
+                                    </span>
+                                    <input type="text" class="form-control input-date" datepicker ng-model="searchInput.req_dt_to">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">案件進捗</label>
+                                <select class="form-control input-width-3" ng-model="searchInput.prj_sts_flg">
+                                    <option value=""></option>
+                                    <option value="*">*</option>
+                                    <option value="=">=</option>
+                                    <option value="{{item.code_value}}" ng-repeat="item in commonMst.project_sts">{{item.disp_value}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">保守契約書回収
+                                </label>
+                                <select class="form-control input-width-3" ng-model="searchInput.warranty_collect_sts_cd">
+                                    <option value=""></option>
+                                    <option value="*">*</option>
+                                    <option value="=">=</option>
+                                    <option value="{{item.code_value}}" ng-repeat="item in commonMst.warranty_collect_sts">{{item.disp_value}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label label-width-3" style="width: 60px;">対象年月</label>
+                                <div class="input-group input-width-1">
+                                    <span class="input-group-addon">
+                                        <span><i class="far fa-calendar-alt"></i></span>
+                                    </span>
+                                    <input type="text" month-picker class="form-control input-date-monthyear" ng-model="searchInput.target_dt">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label label-width-4">申込会社名</label>
+                                <input class="form-control input-width-1" type="text" ng-model="searchInput.company_name">
+                            </div>
+                        </div>
+                        <div class="form-inline" ng-if="app.userInfo.system_role_cd >= 20">
+                            <div class="form-group">
+                                <label class="control-label label-width-4">書類状況</label>
+                                <select class="form-control input-width-1" ng-model="searchInput.doc_sts_flg">
+                                    <option value=""></option>
+                                    <option value="*">*</option>
+                                    <option value="=">=</option>
+                                    <option value="{{item.code_value}}" ng-repeat="item in commonMst.doc_sts">{{item.disp_value}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label label-width-4 text-center">代理店</label>
+                                <select select2 class="form-control input-width-1" ng-model="searchInput.agency_cd">
+                                    <option value=""></option>
+                                    <option value="*">*</option>
+                                    <option value="=">=</option>
+                                    <option value="{{item.agency_cd}}" ng-repeat="item in listAgency">{{item.agency_nm}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-1">
+                        <button type="button" class="btn btn-primary" ng-click="clickSearch()">
+                            <span class="glyphicon glyphicon-search"></span> 検索
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row btn-function text-right">
+                <div style="float: left;" class="block-4-l pagination pull-left">
+                    <dir-pagination-controls boundary-links="true" on-page-change="setPagination(newPageNumber)" ng-class="">
+                    </dir-pagination-controls>
+                </div>
+
+                <div class="block-4-r inline-block" style="">
+                    <ul class="pagination pagination-sm" style="float: left">
+                        <li ng-class="{active : pageSize == 10}"><a href="#" ng-click="setPagination({pageSize: 10})">10件</a></li>
+                        <li ng-class="{active : pageSize == 20}"><a href="#" ng-click="setPagination({pageSize: 20})">20件</a></li>
+                        <li ng-class="{active : pageSize == 50}"><a href="#" ng-click="setPagination({pageSize: 50})">50件</a></li>
+                        <li ng-class="{active : pageSize == 100}"><a href="#" ng-click="setPagination({pageSize: 100})">100件</a></li>
+                    </ul>
+                    <div style="float: left; padding-top: 3%; padding-left: 5px;" page-size="{{pageSize}}" current="{{currentPage}}" totall="{{totalItems}}" ng-if="totalItems > 0">{{pageSize * currentPage < totalItems ? pageSize * currentPage : totalItems}}/{{totalItems}}件</div>
+                </div>
+                
+                <span class="inline-block">
+                    <a class="btn btn-primary" data-toggle="modal" data-target="#modal-ichiran" ng-click="openModalAdd();">新規登録</a>
+                </span>
+                <span class="inline-block">
+                    <button class="btn btn-danger" ng-disabled="app.userInfo.system_role_cd < 20" ng-click="comfirmDeleteOrder();">削除</button>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-bordered table-header">
+                        <tr>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey text-center" style="max-width: 50px !important;">
+                                <input type="checkbox" ng-checked="isCheckAll" ng-click="checkAll($event)" >
+                            </th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">依頼日</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">案件進捗フラグ</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">代理店</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">申込社名	</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">審査状況</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">発注・工事メモ</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">検収受付日</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">検収完了日</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">書類状況フラグ</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">保守契約書回収状況</th>
+                        </tr>
+                        <tr dir-paginate="item in listOrders|itemsPerPage:pageSize" current-page="currentPage" total-items="totalItems">
+                            <td class="col-lg-1 text-center" style="max-width: 50px !important;"> 
+                                <input type="checkbox" id="{{item.id}}" index="{{list_ids.indexOf(item.id)}}" ng-checked="list_ids.indexOf(item.id) > -1" ng-click="checkOne(item.id, $event)">
+                            </td>
+                            <td class="col-lg-1">{{item.req_dt}}</td>
+                            <td class="col-lg-1">{{item.prj_sts_flg_nm}}</td>
+                            <td class="col-lg-1">{{item.agency_nm}}</td>
+                            <td class="col-lg-1"><a target="_blank" href="{{app.baseUrl}}management/detail/{{item.id}}">{{item.company_name}}</a></td>
+                            <td class="col-lg-1">{{item.inspect_sts}}</td>
+                            <td class="col-lg-1">{{item.memo}}</td>
+                            <td class="col-lg-1">{{item.accept_recv_dt}}</td>
+                            <td class="col-lg-1">{{item.accept_end_dt}}</td>
+                            <td class="col-lg-1">{{item.doc_sts_flg_nm}}</td>
+                            <td class="col-lg-1">{{item.warranty_collect_sts_cd_nm}}</td>
+                        </tr>
+                        <tr ng-if="listOrders.length == 0">
+                            <td colspan="11" class="text-center">
+                                データがありません。
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ORDER -->
+<div id="modal-ichiran" class="modal fade">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新規受注登録</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="form-inline">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">代理店<span style="color: red;"> (*)</span></label>
+                                    <select select2 class="form-control input-width-1" 
+                                            ng-model="addOrderItem.agency_cd" 
+                                            ng-disabled="app.userInfo.system_role_cd < 20"
+                                            ng-change="addOrderItem.emp_id='';">
+                                        <option value=""></option>
+                                        <option value="{{item.agency_cd}}" ng-repeat="item in listAgency">{{item.agency_nm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1" style="padding-top:7px;">代理店担当<span style="color: red;"> (*)</span></label>
+                                    <select select2 class="form-control select-2-custom input-width-1" ng-model="addOrderItem.emp_id">
+                                        <option value=""></option>
+                                        <option value="{{item.emp_id}}" ng-if="item.agency_cd==addOrderItem.agency_cd" ng-repeat="item in listEmployee">{{item.emp_nm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">申込会社名<span style="color: red;"> (*)</span></label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.company_name">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">代表電話番号<span style="color: red;"> (*)</span></label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.tel">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">郵便番号</label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.zip_cd" ng-keypress="searchAddressByZipCd(addOrderItem.zip_cd);" ng-blur="searchAddressByZipCd(addOrderItem.zip_cd);">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">登記住所</label>
+                                    <select class="form-control input-width-1" ng-model="addOrderItem.pref_cd">
+                                        <option value=""></option>
+                                        <option value="{{item.pref_cd}}" ng-repeat="item in listPrefecture">{{item.pref_nm}}</option>
+                                    </select>
+                                    <input class="form-control input-width-1" type="text" ng-model="addOrderItem.state">
+                                </div>
+                                <div class="form-group col-12">
+                                    <label class="control-label label-width-1"></label>
+                                    <input class="form-control input-width-1 col-82" type="text" ng-model="addOrderItem.address_other">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 table-responsive">
+                                <div class="table-fix-header-padding">
+                                    <table class="table table-bordered table-header">
+                                        <tbody>
+                                            <tr>
+                                                <th class="col-lg-5 bg-color-grey">ファイル名</th>
+                                                <th class="col-lg-1 bg-color-grey">
+                                                    <label class="input-group-btn">
+                                                        <span class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-fw fa-plus"></i>
+                                                            <input type="file" name="uploadOrderFile" id="uploadOrderFile" style="display: none;" ng-model="addOrderItem.fileUpload" onchange="angular.element(this).scope().uploadFile(this.files)" multiple>
+                                                        </span>
+                                                    </label>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="data-overflow-1" ng-class="{'padding-r-17' : addOrderItem.listFileUpload.length < 6}">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <tbody>
+                                            <tr ng-repeat="item in addOrderItem.listFileUpload track by $index">
+                                                <td class="col-lg-5">{{item.name}}</td>
+                                                <td class="col-lg-1 text-center"><a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-click="removeFileUpload(item);"><i class="fas fa-fw fa-minus"></i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">備考
+                                    </label>
+                                    <textarea class="form-control textarea-height-1" ng-model="addOrderItem.note"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="saveOrder();">登録</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL ORDER -->

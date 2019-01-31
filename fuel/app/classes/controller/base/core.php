@@ -25,7 +25,7 @@ class Controller_Base_Core extends Controller_Hybrid
         $this->init();
         parent::before();
         $this->render_template();
-        // $this->set_title();
+        $this->set_title();
     }
 
     public function after($response)
@@ -49,9 +49,9 @@ class Controller_Base_Core extends Controller_Hybrid
         $this->controller = strtolower(substr(Inflector::denamespace(Request::active()->controller), 11));
         $this->action = Request::active()->action;  
         if (!empty($this->module) && $this->module != 'bookstore') {
-            if (!$this->is_login) {
-                Response::redirect('/login');
-            }
+            // if (!$this->is_login) {
+            //     Response::redirect('/login');
+            // }
             // $this->template = $this->module . '::' . $this->template;
         }
         
@@ -78,6 +78,18 @@ class Controller_Base_Core extends Controller_Hybrid
                 $this->theme->set_partial('scripts', 'partials/scripts');
                 View::set_global('theme', $this->theme);
                 Asset::add_path('themes/default/js/', 'js');
+                break;
+            case 'management':
+                $this->theme = Theme::instance();
+                $this->theme->active('main');
+                $this->theme->set_template('layout');
+                $this->theme->set_partial('head', 'partials/head');
+                $this->theme->set_partial('left_menu', 'partials/left_menu');
+                $this->theme->set_partial('top_menu', 'partials/top_menu');
+                $this->theme->set_partial('modal', 'partials/modal');
+                $this->theme->set_partial('script', 'partials/script');
+                View::set_global('theme', $this->theme);
+                Asset::add_path('themes/main/js/', 'js');
                 break;
             default:
                 break;

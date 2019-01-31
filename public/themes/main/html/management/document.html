@@ -1,0 +1,162 @@
+<div class="main container-fluid" id="#ichiran">
+    <div class="panel">
+        <div class="panel-body">
+        
+            <div class="row btn-function text-right">
+                <div style="float: left;" class="block-4-l pagination pull-left">
+                    <dir-pagination-controls boundary-links="true" on-page-change="setPagination(newPageNumber)" ng-class="">
+                    </dir-pagination-controls>
+                </div>
+
+                <div class="block-4-r inline-block" style="">
+                    <ul class="pagination pagination-sm" style="float: left">
+                        <li ng-class="{active : pageSize == 10}"><a href="#" ng-click="setPagination({pageSize: 10})">10件</a></li>
+                        <li ng-class="{active : pageSize == 20}"><a href="#" ng-click="setPagination({pageSize: 20})">20件</a></li>
+                        <li ng-class="{active : pageSize == 50}"><a href="#" ng-click="setPagination({pageSize: 50})">50件</a></li>
+                        <li ng-class="{active : pageSize == 100}"><a href="#" ng-click="setPagination({pageSize: 100})">100件</a></li>
+                    </ul>
+                    <div style="float: left; padding-top: 3%; padding-left: 5px;" page-size="{{pageSize}}" current="{{currentPage}}" totall="{{totalItems}}" ng-if="totalItems > 0">{{pageSize * currentPage < totalItems ? pageSize * currentPage : totalItems}}/{{totalItems}}件</div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table table-bordered table-header">
+                        <tr>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">資料名</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">ファイル名</th>
+                            <th class="col-sm-1 col-md-1 col-lg-1 bg-color-grey">更新日</th>
+                        </tr>
+                        <tr dir-paginate="item in listDoc|itemsPerPage:pageSize" current-page="currentPage" total-items="totalItems">
+                            <td class="col-lg-1">{{item.doc_name}}</td>
+                            <td class="col-lg-1">
+                                <a class="pointer" ng-click="download(item.doc_url,item.doc_filename)">{{item.doc_filename}}</a>
+                            </td>
+                            <td class="col-lg-1 text-center">{{item.update_time}}</td>
+                        </tr>
+                        <tr ng-if="listDoc.length == 0">
+                            <td colspan="11" class="text-center">
+                                データがありません。
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ORDER -->
+<div id="modal-ichiran" class="modal fade">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新規受注登録</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="form-inline">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">代理店<span style="color: red;"> (*)</span></label>
+                                    <select select2 class="form-control input-width-1" 
+                                            ng-model="addOrderItem.agency_cd" 
+                                            ng-disabled="app.userInfo.system_role_cd < 20"
+                                            ng-change="addOrderItem.emp_id='';">
+                                        <option value=""></option>
+                                        <option value="{{item.agency_cd}}" ng-repeat="item in listAgency">{{item.agency_nm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1" style="padding-top:7px;">代理店担当<span style="color: red;"> (*)</span></label>
+                                    <select select2 class="form-control select-2-custom input-width-1" ng-model="addOrderItem.emp_id">
+                                        <option value=""></option>
+                                        <option value="{{item.emp_id}}" ng-if="item.agency_cd==addOrderItem.agency_cd" ng-repeat="item in listEmployee">{{item.emp_nm}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">申込会社名<span style="color: red;"> (*)</span></label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.company_name">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">代理電話番号<span style="color: red;"> (*)</span></label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.tel">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">郵便番号</label>
+                                    <input class="form-control input-width-1" type="text" required ng-model="addOrderItem.zip_cd" ng-keypress="searchAddressByZipCd(addOrderItem.zip_cd);" ng-blur="searchAddressByZipCd(addOrderItem.zip_cd);">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">登記住所</label>
+                                    <select class="form-control input-width-1" ng-model="addOrderItem.pref_cd">
+                                        <option value=""></option>
+                                        <option value="{{item.pref_cd}}" ng-repeat="item in listPrefecture">{{item.pref_nm}}</option>
+                                    </select>
+                                    <input class="form-control input-width-1" type="text" ng-model="addOrderItem.state">
+                                </div>
+                                <div class="form-group col-12">
+                                    <label class="control-label label-width-1"></label>
+                                    <input class="form-control input-width-1 col-82" type="text" ng-model="addOrderItem.address_other">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 table-responsive">
+                                <div class="table-fix-header-padding">
+                                    <table class="table table-bordered table-header">
+                                        <tbody>
+                                            <tr>
+                                                <th class="col-lg-5 bg-color-grey">ファイル名</th>
+                                                <th class="col-lg-1 bg-color-grey">
+                                                    <label class="input-group-btn">
+                                                        <span class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-fw fa-plus"></i>
+                                                            <input type="file" name="uploadOrderFile" id="uploadOrderFile" style="display: none;" ng-model="addOrderItem.fileUpload" onchange="angular.element(this).scope().uploadFile(this.files)" multiple>
+                                                        </span>
+                                                    </label>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="data-overflow-1" ng-class="{'padding-r-17' : addOrderItem.listFileUpload.length < 6}">
+                                    <table class="table table-bordered table-hover table-striped">
+                                        <tbody>
+                                            <tr ng-repeat="item in addOrderItem.listFileUpload track by $index">
+                                                <td class="col-lg-5">{{item.name}}</td>
+                                                <td class="col-lg-1 text-center"><a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-click="removeFileUpload(item);"><i class="fas fa-fw fa-minus"></i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">備考
+                                    </label>
+                                    <textarea class="form-control textarea-height-1" ng-model="addOrderItem.note"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="saveOrder();">登録</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL ORDER -->

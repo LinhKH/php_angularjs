@@ -1,0 +1,762 @@
+<!-- STATUS BAR -->
+<div class="container-fluid" style="margin-top: 54px; width: 100%;z-index: 999;background: #e5e9ec; position: fixed">
+    <div class="label-status text-center">
+        <div class="label-status-container" style="margin-top:10px;">
+            <ul class="clearfix">
+                <li ng-class="{active: (activeStatus == 7) ? false : (activeStatus >= $index + 1)}" ng-repeat="name in statusPrjSttFlg">{{ name }}</li>                
+            </ul>
+        </div>
+    </div>
+    <!-- STATUS BAR -->
+
+    <div class="btn-function clearfix">
+        <div class="pull-left">
+            <a class="btn btn-primary" href="{{app.baseUrl}}management"><i class="fas fa-fw fa-chevron-left"></i>&nbsp;一覧へ</a>
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-success" 
+               ng-disabled="orderMng.status !== 'view'" 
+               ng-click="sendAPOCallSystem()"
+               ng-if="app.userInfo.system_role_cd >= 20"
+               >{{orderMng.current.apo_sent_flg==='1'? 'APO再送信':'APO送信';}}</a>
+            <a class="btn btn-warning" ng-click="toggleButton()" ng-if="orderMng.status === 'view'"><i class="fas fa-fw fa-edit"></i>&nbsp;編集</a>
+            <a class="btn btn-success" ng-click="editOrderMng()" ng-if="orderMng.status === 'edit'"><i class="fas fa-fw fa-save"></i>&nbsp;保存</a>
+            <a class="btn btn-default" ng-click="initOrderMng()" ng-if="orderMng.status === 'edit'"><i class="fas fa-fw fa-times-circle"></i>&nbsp;キャンセル</a>
+        </div>
+    </div>
+</div>
+<div class="main container-fluid" style="padding-top: 210px">
+    
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="text-color-black panel-title">コメント</span>
+                <a class="panel-custom" data-toggle="collapse" href="#comment-management" aria-expanded="true">
+                    <span class="pull-right text-color-black"><i class="fas fa-fw fa-lg fa-caret-up"></i></span>
+                </a>
+            </div>
+            <div id="comment-management" class="panel-collapse collapse in">
+                <div class="panel-body clearfix">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="comment-result">                                
+                                <div class="comment-detail clearfix" ng-repeat="item in commentOfOrderMng">
+                                    <div class="comment-main"  style="background: #e5e9ec !important;">
+                                        <div class="comment-header">
+                                            <span class="comment-owner">{{item.create_emp_nm}}</span> - <span class="comment-publish">{{item.create_time}}</span>
+                                        </div>
+                                        <div class="comment-content">                                            
+                                            <div ng-bind-html="item.content | nl2br" ng-if="item.disable_flg!=='1'"></div>
+                                            <div ng-if="item.disable_flg=='1'">削除されたコメントです。</div>                                            
+                                        </div>
+                                        <div class="comment-function" 
+                                             ng-if="(app.userInfo.emp_id == item.create_user_id) && (item.disable_flg!=='1')">
+                                            <a class="text-color-red" ng-click="disableCommentOfOrderMng(item.cmt_id);" href="">削除</a>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div ng-if="commentOfOrderMng.length == 0" style="text-align: center;">データはありません</div>
+                            <div class="divider" ng-if="commentOfOrderMng.length > 0"></div>
+                            <div class="comment-input">
+                                <div class="form-group">
+                                    <textarea class="form-control" ng-model="commentToInsert"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <a class="btn btn-sm btn-primary pull-right" ng-click="insertCommentOfOrderMng();" href="">
+                                        <i class="fas fa-reply"></i>&nbsp;コメント追加
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="text-color-black panel-title">オーダー管理</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="text-strong text-color-success">ID: {{ orderMng.current.idStr }}</span>
+                <input type="hidden" ng-model="orderMng.current.req_dt">
+                <a class="panel-custom collapse-item" data-toggle="collapse" ng-click="showOrderManagement()" aria-expanded="true">
+                    <span class="pull-right text-color-black"><i class="fas fa-fw fa-lg {{toogleCollapse(flgOrderManagement)}}"></i></span>
+                </a>
+            </div>
+            <div id="order-management" ng-if="flgOrderManagement" class="panel-collapse collapse in">
+                <div class="panel-body clearfix">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="pull-left col-8">
+                                <div class="form-inline">
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">代理店</label>
+                                            <select class="form-control select-2-custom input-width-4" ng-class="{'disabled': hasDisabledClass('agency')}" ng-change="resetDataEmpId()" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.agency_cd">                                                
+                                                <option value=""></option>
+                                                <option ng-repeat="agencyname in agencyNm" value="{{agencyname['agency_cd']}}">{{agencyname.agency_nm}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">代理店担当</label>
+                                            <select class="form-control select-2-custom input-width-4" ng-disabled="orderMng.status ==='view'" ng-model="orderMng.current.emp_id">                                                    
+                                                <option value=""></option>
+                                                <option ng-if="orderMng.current.agency_cd == item.agency_cd" ng-repeat="item in callStorage.list_employee.data" value="{{item.emp_id}}">{{item.emp_nm}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">申込社名</label>
+                                            <input class="form-control input-width-4" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.company_name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">代表者名</label>
+                                            <input class="form-control input-width-4" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.rep_nm">
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">電話番号</label>
+                                            <input class="form-control input-width-4" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.tel">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">郵便番号</label>
+                                            <input class="form-control input-width-4" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.zip_cd" ng-blur="checkBlurEvent(orderMng.current.zip_cd)" ng-keypress="checkIfEnterKeyWasPressed($event,orderMng.current.zip_cd)">                                            
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">都道府県</label>
+                                            <select class="form-control select-2-custom input-width-2" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.pref_cd">
+                                                <option value=""></option>
+                                                <option ng-repeat="item in master.prefecture" value="{{item.pref_cd}}">{{item.pref_nm}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">市区町村</label>
+                                            <input class="form-control input-width-2" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.state">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">住所</label>
+                                            <input class="form-control input-width-2" type="text" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.address_other">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pull-right col-4">
+                                <div class="form-inline">
+                                    <div class="form-group flex-justify-center">
+                                        <label class="control-label no-wrap">備考&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                        <textarea class="form-control textarea-height-1" ng-disabled="orderMng.status === 'view'" ng-model="orderMng.current.note">{{ orderMng.current.note }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 table-responsive">
+                            <!-- <div class="table-fix-header-padding">
+                                <table class="table table-bordered table-header">
+                                    <tr>
+                                        <th class="col-lg-5 bg-color-grey">ファイル名</th>
+                                        <th class="col-lg-3 bg-color-grey">アップロード日時</th>
+                                        <th class="col-lg-3 bg-color-grey">アップロード者</th>
+                                        <th class="col-lg-1 bg-color-grey" ng-if="orderMng.status === 'edit'">
+                                            <label class="input-group-btn">
+                                                <span class="btn btn-primary">
+                                                    <i class="fas fa-fw fa-plus"></i>
+                                                    <input type="file" style="display: none;" file-model="declaration" ng-disabled="orderMng.status === 'view'" file-model-onchange="uploadOrderMngFile" >
+                                                </span>
+                                            </label>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div> -->
+                            <div class="data-overflow-1">
+                                <table class="table table-bordered table-hover table-striped">
+                                        <tr>
+                                                <th class="col-lg-5 bg-color-grey">ファイル名</th>
+                                                <th class="col-lg-3 bg-color-grey">アップロード日時</th>
+                                                <th class="col-lg-3 bg-color-grey">アップロード者</th>
+                                                <th class="col-lg-1 bg-color-grey" ng-if="orderMng.status === 'edit'">
+                                                    <label class="input-group-btn">
+                                                        <span class="btn btn-primary">
+                                                            <i class="fas fa-fw fa-plus"></i>
+                                                            <input type="file" style="display: none;" file-model="declaration" ng-disabled="orderMng.status === 'view'" file-model-onchange="uploadOrderMngFile" >
+                                                        </span>
+                                                    </label>
+                                                </th>
+                                            </tr>	
+                                    <tr ng-repeat="order_mng_file in orderMng.current.order_mng_file">
+                                        <td class="col-lg-5">
+                                            <a href="javascript:void(0)" ng-click="downloadFile(order_mng_file.url_preview,order_mng_file.file_nm);">{{ order_mng_file.file_nm }}</a>                                            
+                                        </td>
+                                        <td class="col-lg-3">{{ order_mng_file.create_time }}</td>
+                                        <td class="col-lg-3">{{ order_mng_file.emp_nm }}</td>
+                                        <td class="col-lg-1 text-center" ng-if="orderMng.status === 'edit'">
+                                            <a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-click="delOrderMngFile($index)"><i class="fas fa-fw fa-minus"></i></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">契約種別</label>
+                                    <select class="form-control input-width-1" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.contract_type_cd">
+                                            <option value=""></option>
+                                        <option ng-repeat="contract_type in commonMst['contract_type']" value="{{contract_type['code_value']}}">{{contract_type.disp_value}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">案件進捗</label>
+                                    <select class="form-control input-width-1" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.prj_sts_flg">
+                                            <option value=""></option>
+                                        <option ng-repeat="project_sts in commonMst['project_sts']" value="{{project_sts['code_value']}}">{{project_sts.disp_value}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">受付日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.accept_dt" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">申込日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.order_dt" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">対象年月</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date-monthyear" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.target_dt" month-picker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">書類状況</label>
+                                    <select class="form-control input-width-1" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.doc_sts_flg">
+                                            <option value=""></option>
+                                        <option ng-repeat="doc_sts in commonMst['doc_sts']" value="{{doc_sts['code_value']}}">{{doc_sts.disp_value}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">書類OK日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.app_ok_date" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">書類返却日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.doc_rtn_dt" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">書類再到着日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.doc_re_arrv_dt" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">原本到着日</label>
+                                    <div class="input-group input-width-1">
+                                        <span class="input-group-addon">
+                                            <span><i class="far fa-calendar-alt"></i></span>
+                                        </span>
+                                        <input type="text" class="form-control input-date" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.vis_origin_arrv_dt" datepicker>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">審査状況</label>
+                                    <input class="form-control input-width-1" type="text" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.inspect_sts">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">保守契約書回収状況</label>
+                                    <select class="form-control input-width-1" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.warranty_collect_sts_cd">
+                                            <option value=""></option>
+                                        <option ng-repeat="warranty_collect_sts in commonMst['warranty_collect_sts']" value="{{warranty_collect_sts['code_value']}}">{{warranty_collect_sts.disp_value}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label label-width-1">確定リース会社名</label>
+                                    <input class="form-control input-width-1" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" type="text" ng-model="orderMng.current.confirmed_lease_comp_nm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-inline inline-block col-lg-6">
+                            <div class="form-group col-12">
+                                <label class="control-label label-width-1">書類不備内容</label>
+                                <textarea class="form-control textarea-height-2" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.doc_fubi_desc">{{ orderMng.current.doc_fubi_desc }}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-inline inline-block col-lg-6">
+                            <div class="form-group col-12">
+                                <label class=" control-label label-width-1">付帯品備考</label>
+                                <textarea class="form-control textarea-height-2" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.accessories_note">{{ orderMng.current.accessories_note }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-inline inline-block col-lg-12">
+                            <label class="control-label label-width-1">発注・工事メモ</label>	
+                            <textarea style="width: 91%" class="form-control textarea-height-2" ng-class="{'disabled': hasDisabledClass('agency')}" ng-disabled=" isAgency() || orderMng.status ==='view'" ng-model="orderMng.current.memo">{{ orderMng.current.memo }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading flex-justify-center">
+                <span class="text-color-black panel-title">物件管理</span>
+                <span>
+                    <a ng-if="orderMng.status ==='edit' && !isAgency()" class="btn btn-primary btn-sm" href="#" ng-click="addBuildingDetail()"><i class="fas fa-fw fa-plus"></i></a>
+                    <a class="panel-custom collapse-item" data-toggle="collapse" ng-click="showAssetManagement()"  aria-expanded="true">
+                        <span class="text-color-black"><i class="fas fa-fw fa-lg {{toogleCollapse(flgAssetManagement)}}"></i></span>
+                    </a>
+                </span>
+            </div>
+            <div id="asset-management" ng-if="flgAssetManagement" class="panel-collapse collapse in">
+                <div class="panel-body clearfix">
+                    <div class="row data-overflow-1">
+                        <div class="col-lg-12 text-center" ng-repeat="building_detail in orderMng.current.building_detail track by $index">
+                            <div class="form-group border-bottom flex-justify-center">
+                                <label class="control-label label-width-3 border-right">{{ $index + 1 }}</label>
+                                <label class="control-label label-width-2">メーカー</label>
+                                <select class="form-control input-width-3"
+                                        ng-change="resetDataAnother($index)"
+                                        ng-disabled="orderMng.status === 'view' || isAgency()" 
+                                        ng-model="building_detail.maker_nm">
+                                    <option value=""></option>
+                                    <option ng-repeat="agencyDevice in agencyOaDevice" value="{{agencyDevice['maker_nm']}}">{{agencyDevice.maker_nm}}</option>
+                                </select>
+
+                                <label class="control-label label-width-3">種別</label>
+                                <select class="form-control input-width-3" ng-model="building_detail.type_cd" ng-disabled="orderMng.status === 'view' || isAgency()">
+                                    <option value=""></option>
+                                    <option ng-if="agencyTypeCd.maker_nm == building_detail.maker_nm" ng-repeat="agencyTypeCd in agencyTypeCd" value="{{agencyTypeCd['type_cd']}}">{{agencyTypeCd.type_cd}}</option>
+                                </select>
+
+                                <label class="control-label label-width-3">商品名</label>
+                                <select class="form-control input-width-2" ng-model="building_detail.product_nm" ng-disabled="orderMng.status === 'view' || isAgency()">
+                                        <option value=""></option>
+                                    <option ng-if="agencyProductNm.type_cd == building_detail.type_cd" ng-repeat="agencyProductNm in agencyProductNm" value="{{agencyProductNm['product_nm']}}">{{agencyProductNm.product_nm}}</option>
+                                </select>
+
+                                <!-- Model_Nm -->
+                                <label class="control-label label-width-3">型式</label>															
+                                <select class="form-control input-width-2" ng-model="building_detail.machine_id" ng-disabled="orderMng.status === 'view' || isAgency()">
+                                        <option value=""></option>
+                                    <option ng-if="agencyModel.product_nm == building_detail.product_nm" ng-repeat="agencyModel in agencyModelNm" value="{{agencyModel['machine_id']}}">{{agencyModel.model_nm}}</option>
+                                </select>
+
+                                <label class="control-label label-width-3">数量</label>
+                                <input class="form-control input-width-3" type="text" ng-model="building_detail.item_amnt" numbers-only ng-disabled="orderMng.status === 'view' || isAgency()">
+                                <a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-if="orderMng.status==='edit' && !isAgency()" ng-click="delBuildingDetail($index)">
+                                    <i class="fas fa-fw fa-minus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading flex-justify-center">
+                <span class="text-color-black panel-title">リース管理</span>
+                <span>
+                    <a class="btn btn-primary btn-sm" href="#" ng-if="orderMng.status ==='edit' && !isAgency()" ng-click="addLeaseMngDetail()"><i class="fas fa-fw fa-plus"></i></a>
+                    <a class="panel-custom collapse-item" data-toggle="collapse" ng-click="showRentManagement()" aria-expanded="true">
+                        <span class="text-color-black"><i class="fas fa-fw fa-lg {{toogleCollapse(flgRentManagement)}}"></i></span>
+                    </a>
+                </span>
+            </div>
+            <div id="rent-management" ng-if="flgRentManagement" class="panel-collapse collapse in">
+                <div class="panel-body clearfix">
+                    <div class="row data-overflow-2">
+                        <div class="col-lg-12">
+                            <div class="flex-justify-center block-1 border-bottom" ng-repeat="lease_mng in orderMng.current.lease_mng track by $index">
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label class="control-label label-width-3 text-center">{{ $index + 1 }}</label>
+                                    </div>
+                                </div>
+                                <div class="form-inline border-left border-right">
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">リース会社名</label>
+                                            <select class="form-control input-width-2" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.lease_comp_cd">
+                                                    <option value=""></option>
+                                                <option ng-repeat="lease_comp in commonMst['lease_comp']" value="{{lease_comp['code_value']}}">{{lease_comp.disp_value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">リース月額</label>
+                                            <input class="form-control input-width-1" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.lease_cost_mm" numbers-only>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">リース期間</label>
+                                            <select class="form-control input-width-1" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.lease_period_cd">
+                                                    <option value=""></option>
+                                                <option ng-repeat="lease_period in commonMst['lease_period']" value="{{lease_period['code_value']}}">{{lease_period.disp_value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">リース料率</label>
+                                            <input class="form-control input-width-1" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.utm_lease_rate" numbers-only>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">	
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">審査受付日</label>
+                                            <div class="input-group input-width-1">
+                                                <span class="input-group-addon">
+                                                    <span><i class="far fa-calendar-alt"></i></span>
+                                                </span>
+                                                <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_recv_dt" datepicker>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">審査状況</label>
+                                            <select class="form-control input-width-1" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_sts_flg">
+                                                    <option value=""></option>
+                                                <option ng-repeat="inspect_sts in commonMst['inspect_sts']" value="{{inspect_sts['code_value']}}">{{inspect_sts.disp_value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">審査可決日</label>
+                                            <div class="input-group input-width-1">
+                                                <span class="input-group-addon">
+                                                    <span><i class="far fa-calendar-alt"></i></span>
+                                                </span>
+                                                <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_approve_dt" datepicker>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">審査確定</label>
+                                            <select class="form-control input-width-1" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_approve_flg">
+                                                    <option value=""></option>
+                                                <option ng-repeat="inspect_confirmed_flg in commonMst['inspect_confirmed_flg']" value="{{inspect_confirmed_flg['code_value']}}">{{inspect_confirmed_flg.disp_value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">審査確定日</label>
+                                            <div class="input-group input-width-1">
+                                                <span class="input-group-addon">
+                                                    <span><i class="far fa-calendar-alt"></i></span>
+                                                </span>
+                                                <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_determine_dt" datepicker>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">審査備考</label>
+                                            <input class="form-control input-width-3" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.inspect_note">
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">検収受付日</label>
+                                            <div class="input-group input-width-1">
+                                                <span class="input-group-addon">
+                                                    <span><i class="far fa-calendar-alt"></i></span>
+                                                </span>
+                                                <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.accept_recv_dt" datepicker>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">検収状況</label>
+                                            <select class="form-control input-width-1" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.accept_sts_flg">
+                                                    <option value=""></option>
+                                                <option ng-repeat="accept_sts in commonMst['accept_sts']" value="{{accept_sts['code_value']}}">{{accept_sts.disp_value}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-4">検収完了日</label>
+                                            <div class="input-group input-width-1">
+                                                <span class="input-group-addon">
+                                                    <span><i class="far fa-calendar-alt"></i></span>
+                                                </span>
+                                                <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.accept_end_dt" datepicker>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">検収備考</label>
+                                            <input class="form-control input-width-1" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="lease_mng.accept_note">
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">審査書類</label>
+                                            <div class="input-group input-file-width-1">
+                                                <a ng-if="orderMng.status==='view'" href="" ng-click="downloadFile(lease_mng.url_preview_inspect,lease_mng.inspect_doc_nm);">{{lease_mng.inspect_doc_nm}}</a>
+                                                <input disabled ng-if="orderMng.status==='edit'"  type="text" class="form-control" readonly ng-model="lease_mng.inspect_doc_nm" >
+                                                <label class="input-group-btn" ng-if="orderMng.status==='edit'">
+                                                    <span  class="btn btn-primary">
+                                                        添付
+                                                        <input type="file" style="display: none;" ng-disabled="isAgency() || orderMng.status ==='view'" file-model="" file-model-onchange="uploadInspect" data="{{$index}}">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label label-width-2">検収書類</label>
+                                            <div class="input-group input-file-width-1">
+                                                <a ng-if="orderMng.status==='view'" href="" ng-click="downloadFile(lease_mng.url_preview_accept,lease_mng.accept_doc_nm);">{{lease_mng.accept_doc_nm}}</a>
+                                                <input disabled ng-if="orderMng.status==='edit'" type="text" class="form-control" readonly ng-model="lease_mng.accept_doc_nm">
+                                                <label class="input-group-btn" ng-if="orderMng.status==='edit'">
+                                                    <span class="btn btn-primary">
+                                                        添付
+                                                        <input type="file" style="display: none;" ng-disabled="isAgency() || orderMng.status ==='view'" file-model="" file-model-onchange="uploadAccept" data="{{$index}}">
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-if="orderMng.status === 'edit' && !isAgency()" ng-click="delLeaseMng($index)"><i class="fas fa-fw fa-minus"></i></a>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-group">
+        <div class="panel panel-default">            
+            <div class="panel-heading flex-justify-center">
+                <span class="text-color-black panel-title">工事発注管理</span>
+                <span>
+                    <a class="btn btn-primary btn-sm" href="#" ng-if="orderMng.status ==='edit' && !isAgency()" ng-click="addWorkMng()"><i class="fas fa-fw fa-plus"></i></a>
+                    <a class="panel-custom collapse-item" data-toggle="collapse" ng-click="showManagement4()" aria-expanded="true">
+                        <span class="text-color-black"><i class="fas fa-fw fa-lg {{toogleCollapse(flgManagement4)}}"></i></span>
+                    </a>
+                </span>
+            </div>
+            
+            <div id="management-4" ng-if="flgManagement4" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="row data-overflow-3">
+                        <div class="col-lg-12">
+                            <!-- t_work_mng table -->
+                            <div class="flex-justify-center block-1 border-bottom no-padding-left" ng-repeat="work_mng in orderMng.current.work_mng track by $index">
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label class="control-label label-width-3 text-center">{{ $index + 1  }}</label>
+                                    </div>
+                                </div>
+                                <div class="border-left border-right border-right-2">
+                                    <div class="clearfix">
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label class="control-label label-width-2">設置先名称</label>
+                                                <input class="form-control input-width-2" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_place_nm">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label label-width-2">郵便番号</label>
+                                                <input class="form-control input-width-3" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_zip_cd" ng-blur="checkInstZipCdBlur(work_mng.inst_zip_cd,$index)" ng-keypress="checkInstZipCd($event,work_mng.inst_zip_cd,$index)">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label label-width-4">都道府県</label>
+                                                <select class="form-control input-width-3" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_pref_cd">
+                                                        <option value=""></option>
+                                                    <option ng-repeat="item in master.prefecture" value="{{item.pref_cd}}">{{item.pref_nm}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label label-width-2">市区町村</label>
+                                                <input class="form-control input-width-3" style="width: 338px" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_city_nm">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label label-width-2">住所</label>
+                                                <input class="form-control input-width-2" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="pull-left col-54">
+                                            <div class="form-inline">
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">電話番号</label>
+                                                    <input class="form-control input-width-2" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.insta_tel_no">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">担当者名</label>
+                                                    <input class="form-control input-width-5" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.inst_chrgp_nm">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事候補日</label>
+                                                    <div class="input-group input-width-2">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-calendar-alt"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_candi_dt" datepicker>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事予定時間</label>
+                                                    <div class="input-group input-width-3">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-clock"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-time" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_plan_time_from" clockpicker>
+                                                    </div>
+                                                    <label class="control-label label-width-4 text-center">~</label>
+                                                    <div class="input-group input-width-3">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-clock"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-time" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_plan_time_to" clockpicker>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事確定日</label>
+                                                    <div class="input-group input-width-2">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-calendar-alt"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-date" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_confirmed_dt" datepicker>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事確定時間</label>
+                                                    <div class="input-group input-width-3">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-clock"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-time" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_confirmed_time_from" clockpicker>
+                                                    </div>
+                                                    <label class="control-label label-width-4 text-center">~</label>
+                                                    <div class="input-group input-width-3">
+                                                        <span class="input-group-addon">
+                                                            <span><i class="far fa-clock"></i></span>
+                                                        </span>
+                                                        <input type="text" class="form-control input-time" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_confirmed_time_to" clockpicker>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事予定業者</label>
+                                                    <input class="form-control input-width-2" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_plan_constructor">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-2">工事状況</label>
+                                                    <select class="form-control input-width-3" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_sts_flg">
+                                                            <option value=""></option>
+                                                        <option ng-repeat="work_sts in commonMst['work_sts']" value="{{work_sts['code_value']}}">{{work_sts.disp_value}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label label-width-4">工事完了日</label>
+                                                    <input class="form-control input-width-3 input-date" type="text" ng-disabled="isAgency() || orderMng.status ==='view'" datepicker ng-model="work_mng.work_end_dt">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-left col-46">	
+                                            <div class="form-inline">
+                                                <div class="form-group flex-justify-center">
+                                                    <label class="control-label label-width-2">備考</label>
+                                                    <textarea class="form-control textarea-height-3" ng-disabled="isAgency() || orderMng.status ==='view'" ng-model="work_mng.work_note">{{ work_mng.work_note }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="panel-group">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading panel-title flex-justify-center">
+                                                    <span class="text-color-black">発注詳細</span>
+                                                    <span><a class="btn btn-primary btn-sm" href="#" ng-if="orderMng.status ==='edit' && !isAgency()" ng-click="addWorkDetail($index)"><i class="fas fa-fw fa-plus"></i></a></span>
+                                                </div>
+                                                <!-- t_order_detail table -->
+                                                <div class="panel-body clearfix" ng-repeat="item in work_mng.order_detail track by $index">
+                                                    <div class="row data-overflow-1">
+                                                        <div class="col-lg-12 text-center no-padding-left">
+                                                            <div class="form-group border-bottom flex-justify-center">
+                                                                <label class="control-label label-width-3 border-right">{{ $index + 1 }}</label>
+                                                                <label class="control-label label-width-3" style="width: 5%;">メーカー</label>
+                                                                <select class="form-control input-width-3" 
+                                                                        ng-change="resetDataOrderDetail($parent.$index, $index)"
+                                                                        ng-disabled="isAgency() || orderMng.status ==='view'" 
+                                                                        ng-model="item.maker_nm">
+                                                                    <option value=""></option>
+                                                                    <option ng-repeat="agencyDevice in agencyOaDevice" value="{{agencyDevice['maker_nm']}}">{{agencyDevice.maker_nm}}</option>
+                                                                </select>
+
+                                                                <label class="control-label label-width-3">種別</label>
+                                                                <select class="form-control input-width-3" ng-model="item.type_cd" ng-disabled="isAgency() || orderMng.status ==='view'">
+                                                                        <option value=""></option>
+                                                                    <option ng-if="agencyTypeCd.maker_nm == item.maker_nm" ng-repeat="agencyTypeCd in agencyTypeCd" value="{{agencyTypeCd['type_cd']}}">{{agencyTypeCd.type_cd}}</option>
+                                                                </select>
+
+                                                                <label class="control-label label-width-3">商品名</label>
+                                                                <select class="form-control input-width-2" ng-model="item.product_nm" ng-disabled="isAgency() || orderMng.status ==='view'">
+                                                                        <option value=""></option>
+                                                                    <option ng-if="agencyProductNm.type_cd == item.type_cd" ng-repeat="agencyProductNm in agencyProductNm" value="{{agencyProductNm['product_nm']}}">{{agencyProductNm.product_nm}}</option>
+                                                                </select>
+
+                                                                <!-- Model_Nm -->
+                                                                <label class="control-label label-width-3">型式</label>	
+                                                                <select class="form-control input-width-2" ng-model="item.machine_id" ng-disabled="isAgency() || orderMng.status ==='view'">
+                                                                        <option value=""></option>
+                                                                    <option ng-if="agencyModel.product_nm == item.product_nm" ng-repeat="agencyModel in agencyModelNm" value="{{agencyModel['machine_id']}}">{{agencyModel.model_nm}}</option>
+                                                                </select>                                                            
+
+                                                                <label class="control-label label-width-3">発注日</label>
+                                                                <input class="form-control input-width-3" type="text" ng-model="item.order_dt" datepicker ng-disabled="isAgency() || orderMng.status ==='view'">
+                                                                <a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-if="orderMng.status==='edit' && !isAgency()" ng-click="delWorkDetail($parent.$parent.$index, $index)">
+                                                                    <i class="fas fa-fw fa-minus"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>	
+                                                    </div>
+                                                </div>	
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="btn btn-sm btn-danger bg-color-danger" href="#" ng-if="orderMng.status ==='edit' && !isAgency()" ng-click="delWorkMng($index)"><i class="fas fa-fw fa-minus"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

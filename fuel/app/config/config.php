@@ -273,7 +273,7 @@ return array(
 		 * );
 		 */
 		'packages'  => array(
-			'orm','email'
+			'auth','orm','email'
 		),
 
 		/**
