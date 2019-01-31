@@ -80,7 +80,13 @@ return array(
 	// 'language'           => 'en', // Default language
 	// 'language_fallback'  => 'en', // Fallback language when file isn't available for default language
 	// 'locale'             => 'en_US', // PHP set_locale() setting, null to not set
-
+  'language'           => 'ja', // Default language
+  'language_fallback'  => 'ja', // Fallback language when file isn't available for default language
+  'locale'             => 'ja_JP', // PHP set_locale() setting, null to not set
+    'locales' => array(
+       'ja' => 'ja_JP',
+       'en' => 'en_US',
+   ),
 	/**
 	 * Internal string encoding charset
 	 */

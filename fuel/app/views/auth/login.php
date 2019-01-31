@@ -9,7 +9,7 @@
     <span class="error password" style="font-style: italic;font-size: 12px;color: red; float: left; padding-top:5px"></span>
   </div>
   <div>
-    <input type="submit" value="Log in" />
+    <button type="submit" >Log in</button>
   </div>
   <div class="form-group">
       <a href="<?php echo \Uri::create('auth/forgot') ?>" class="">パスワードを忘れたらこちら</a>
