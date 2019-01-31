@@ -79,7 +79,7 @@ class Controller_Bookstore_Cart extends Controller_Base_Rest
             return $this->response($this->resp);
         }
 
-        $arrInput = $val->validated();        
+        $arrInput = $val->validated();
         $arrData = $arrInput['data'];
         $arrCartUpdate = [
           'sId' => isset($arrData['sId']) ? $arrData['sId'] : null,

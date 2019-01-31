@@ -43,8 +43,8 @@ class Controller_Base_Core extends Controller_Hybrid
     {
         
         Lang::load('app', true);
-        // $this->is_login = Model_Base_User::is_login();
-        // $this->user = Model_Base_User::getUserInfo();
+        $this->is_login = Model_Base_User::is_login();
+        $this->user = Model_Base_User::getUserInfo();
         $this->module = strtolower(Request::active()->module);
         $this->controller = strtolower(substr(Inflector::denamespace(Request::active()->controller), 11));
         $this->action = Request::active()->action;  
