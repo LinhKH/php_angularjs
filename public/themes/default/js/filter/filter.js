@@ -84,6 +84,7 @@ bookApp.filter('isEmpty', function () {
         return true;
     };
 });
+
 bookApp.filter('cut', function () {
     return function (value, wordwise, max, tail) {
         if (!value) return '';

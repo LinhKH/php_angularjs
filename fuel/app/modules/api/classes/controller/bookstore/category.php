@@ -49,13 +49,13 @@ class Controller_Bookstore_Category extends Controller_Base_Rest
             $val = Validation::forge();                    
 
             $arrList = DB::select_array(['*']);
-              $arrList->from('tbl_category');
-              $arrList->where('del_flg', 0);
-              $arrResult = $arrList->execute()->as_array();
+            $arrList->from('tbl_category');
+            $arrList->where('del_flg', 0);
+            $arrResult = $arrList->execute()->as_array();
 
-              if ($arrList === false) {
-                  throw new Exception();
-              }
+            if ($arrList === false) {
+                throw new Exception();
+            }
             $this->resp(null, null, $arrResult);
                         
         } catch (Exception $e) {
@@ -68,13 +68,18 @@ class Controller_Bookstore_Category extends Controller_Base_Rest
         return $this->response($this->resp);
     }
     
+    /**
+     * getProductById function
+     *
+     * @return arrResult
+     */
     public function post_getProductById()
     {        
         try {
             $val = Validation::forge();
             $val->add_callable('MyRules');
 
-            $val->add_field('id', 'itemperpage', []);
+            $val->add_field('id', 'id', []);
 
             if (!$val->run()) {
                 $this->resp(null, 3000, $val->error_message());

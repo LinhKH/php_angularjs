@@ -103,7 +103,7 @@ class Controller_Bookstore_Product extends Controller_Base_Rest
             $val = Validation::forge();
             $val->add_callable('MyRules');
 
-            $val->add_field('id', 'itemperpage', []);
+            $val->add_field('id', 'id', []);
 
             if (!$val->run()) {
                 $this->resp(null, 3000, $val->error_message());
