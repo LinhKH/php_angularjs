@@ -8,5 +8,5 @@ define('ORDER_FILE_PATH', DOCROOT . 'files' . DS . 'upload'.DS.'order_file_mng')
 define('LEASE_MNG_PATH', DOCROOT . 'files' . DS . 'upload'.DS.'lease_mng');
 define('UPLOAD_TEMP_PATH', DOCROOT . 'files' . DS . 'upload_temp');
 define('DOCUMENT_FILE_PATH', DOCROOT . 'files' . DS . 'upload'.DS.'document');
-define('MAX_UPLOAD_SIZE', 25*1024*1024); // Max file upload 10 MB 
+define('MAX_UPLOAD_SIZE', 25*1024*1024); // Max file upload 25 MB 
 
