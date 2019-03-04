@@ -48,7 +48,7 @@ class Controller_Base_Core extends Controller_Hybrid
         $this->module = strtolower(Request::active()->module);
         $this->controller = strtolower(substr(Inflector::denamespace(Request::active()->controller), 11));
         $this->action = Request::active()->action;  
-        if (!empty($this->module) && $this->module != 'bookstore') {
+        if (!empty($this->module) && $this->module != 'scart') {
             if (!$this->is_login) {
                 Response::redirect('/login');
             }
@@ -65,12 +65,13 @@ class Controller_Base_Core extends Controller_Hybrid
     public function render_template()
     {
         switch ($this->module) {                        
-            case 'bookstore':
+            case 'scart':
                 $this->theme = Theme::instance();
                 $this->theme->active('default');
                 $this->theme->set_template('layout');
                 $this->theme->set_partial('head_tag', 'partials/head_tag');
                 $this->theme->set_partial('header_top', 'partials/header_top');
+                $this->theme->set_partial('left-sidebar', 'partials/left-sidebar');
                 $this->theme->set_partial('menu', 'partials/menu');
                 $this->theme->set_partial('footer', 'partials/footer');
                 $this->theme->set_partial('header_bottom', 'partials/header_bottom');

@@ -6,60 +6,45 @@ bookApp.config(['$routeProvider', '$locationProvider',
             controller: 'LogoutCtrl',
             url: baseURL + 'logout'
         }).when('/', {
-            templateUrl: 'themes/default/html/bookstore/index.html',
+            templateUrl: 'themes/default/html/scart/index.html',
             controller: 'HomePageCtr',
-            module: 'Bookstore',
+            module: 'Scart',
             url: baseURL,
-            title: 'Trang Chủ'
-        }).when('/product', {
-          templateUrl: 'themes/default/html/bookstore/product.html',
+            title: 'Demo S-cart: Free open source - eCommerce Platform for Business',
+            breadcrumbs: 'Home',
+        })
+        .when('/products', {
+          templateUrl: 'themes/default/html/scart/products.html',
           controller: 'ProductPageCtr',
-          module: 'Bookstore',
+          module: 'Scart',
           url: baseURL,
-          title: 'Sản Phẩm'
-        })
-        .when('/product/detail/:id', {
-            templateUrl: 'themes/default/html/bookstore/detail.html',
-            controller: 'ProductPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Chi Tiết Sản Phẩm'
-        })
-        .when('/product-by-category/:catname/:catid', {
-            templateUrl: 'themes/default/html/bookstore/productbycat.html',
-            controller: 'CategoryPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Sản Phẩm Theo Danh Mục'
-        })
-        .when('/topbrands', {
-            templateUrl: 'themes/default/html/bookstore/topbrands.html',
-            controller: 'BrandPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Brand Page'
-        })
-        .when('/cart', {
-            templateUrl: 'themes/default/html/bookstore/cart.html',
-            controller: 'CartPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Giỏ Hàng'
-        })
+          title: 'All products',
+          breadcrumbs: 'All products',
+        })        
+        .when('/news', {
+          templateUrl: 'themes/default/html/scart/news.html',
+          controller: 'NewsPageCtr',
+          module: 'Scart',
+          url: baseURL,
+          title: 'Blog',
+          breadcrumbs: 'Blog'
+        })        
+        .when('/about', {
+          templateUrl: 'themes/default/html/scart/about.html',
+          controller: 'AboutPageCtr',
+          module: 'Scart',
+          url: baseURL,
+          title: 'About',
+          breadcrumbs: 'About'
+        })        
         .when('/contact', {
-            templateUrl: 'themes/default/html/bookstore/contact.html',
-            controller: 'ContactPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Liên Hệ'
-        })
-        .when('/signin', {
-            templateUrl: 'themes/default/html/bookstore/signin.html',
-            controller: 'SignPageCtr',
-            module: 'Bookstore',
-            url: baseURL,
-            title: 'Đăng Ký/Đăng Nhập'
-        })
+          templateUrl: 'themes/default/html/scart/contact.html',
+          controller: 'ContactPageCtr',
+          module: 'Scart',
+          url: baseURL,
+          title: 'Contact',
+          breadcrumbs: 'Contact'
+        })        
         .otherwise({
             redirectTo: '/'
         });
@@ -72,6 +57,7 @@ bookApp.config(['$routeProvider', '$locationProvider',
         $rootScope.app.controller = next.controller;
         $rootScope.app.url = next.url;
         $rootScope.app.title = next.title;
+        $rootScope.app.breadcrumbs = next.breadcrumbs;
 
         if (next.controller === 'LogoutCtrl') {
             event.preventDefault();

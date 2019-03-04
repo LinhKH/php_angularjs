@@ -9,15 +9,12 @@
 </script>
 <?php
 		echo \Asset::js([
-			'jquerymain.js',
-			'script.js',
-      'jquery-1.7.2.min.js',
+      'jquery.js',
+      'jquery-ui.min.js',
       'bootstrap.min.js',
-			'nav.js',
-			'move-top.js',
-			'easing.js',
-			'nav-hover.js',
-			'jquery.flexslider.js',
+      'jquery.scrollUp.min.js',
+      'jquery.prettyPhoto.js',
+      'main.js',      
 			'angular/angular.min.js',
 			'angular/angular-route.min.js',
 			'angular/angular-sanitize.min.js',
@@ -30,32 +27,80 @@
 		]);
 	?>
 	<script type="text/javascript">
-		$(document).ready(function($){
-			$('#dc_mega-menu-orange').dcMegaMenu({rowItems:'4',speed:'fast',effect:'fade'});
-		});
-	</script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-		
-		$().UItoTop({ easingType: 'easeOutQuart' });
-		
-	});
-	</script>
-    <a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
-    	  
-	  <script type="text/javascript">
-		$(function(){
-		  // SyntaxHighlighter.all();
-		});
-		$(window).load(function(){
-		  $('.flexslider').flexslider({
-				animation: "slide",
-				start: function(slider){
-					$('body').removeClass('loading');
-				}
-		  });
-		});
-		</script>
+    function formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+    $('#shipping').change(function () {
+      $('#total').html(formatNumber(parseInt(55000) + parseInt($('#shipping').val())));
+    });
+  </script>
+
+  <script type="text/javascript">
+    function addToCart(id, instance = null) {
+      if (instance == null || instance == '') {
+        var cart = $('.shopping-cart');
+      } else {
+        var cart = $('.shopping-' + instance);
+      }
+      var imgtodrag = $('.product-box-' + id).find("img").eq(0);
+      if (imgtodrag) {
+        var imgclone = imgtodrag.clone()
+          .offset({
+            top: imgtodrag.offset().top,
+            left: imgtodrag.offset().left
+          })
+          .css({
+            'opacity': '0.5',
+            'position': 'absolute',
+            'width': '150px',
+            'z-index': '99999999'
+          })
+          .appendTo($('body'))
+          .animate({
+            'top': cart.offset().top,
+            'left': cart.offset().left,
+            'width': 75,
+            'height': 75
+          }, 1000, 'easeInOutExpo');
+        // setTimeout(function () {
+        //     cart.effect("shake", {times: 2}, 200);
+        // }, 1500);
+
+        imgclone.animate({
+          'width': 0,
+          'height': 0
+        }, function () {
+          $(this).detach()
+        });
+      }
+
+      $.ajax({
+        url: './public/addToCart',
+        type: 'POST',
+        dataType: 'json',
+        data: { id: id, instance: instance, _token: 'Aw5HkJqwyZkgfGVE0Sm93smCUwyYQhxLPgptOdEX' },
+        success: function (data) {
+          console.log(data);
+          error = parseInt(data.error);
+          if (error === 0) {
+            setTimeout(function () {
+              if (data.instance == 'default') {
+                $('#count_cart').html(data.count_cart);
+                $('.actions').show();
+              } else {
+                $('#count_' + data.instance).html(data.count_cart);
+              }
+
+            }, 1000);
+          } else {
+            // alert(data.error);
+          }
+
+        }
+      });
+
+    }
+  </script>
 		<?php
 		$arrFile = [
 				'script.js',

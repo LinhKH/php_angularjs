@@ -1,56 +1,140 @@
-<div class="footer">
-   	  <div class="wrapper">	
-	     <div class="section group">
-				<div class="col_1_of_4 span_1_of_4">
-						<h4>Information</h4>
-						<ul>
-						<li><a href="#">About Us</a></li>
-						<li><a href="#">Customer Service</a></li>
-						<li><a href="#"><span>Advanced Search</span></a></li>
-						<li><a href="#">Orders and Returns</a></li>
-						<li><a href="#"><span>Contact Us</span></a></li>
-						</ul>
-					</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>Why buy from us</h4>
-						<ul>
-						<li><a href="about.html">About Us</a></li>
-						<li><a href="faq.html">Customer Service</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-						<li><a href="contact.html"><span>Site Map</span></a></li>
-						<li><a href="preview.html"><span>Search Terms</span></a></li>
-						</ul>
-				</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>My account</h4>
-						<ul>
-							<li><a href="contact.html">Sign In</a></li>
-							<li><a href="index.html">View Cart</a></li>
-							<li><a href="#">My Wishlist</a></li>
-							<li><a href="#">Track My Order</a></li>
-							<li><a href="faq.html">Help</a></li>
-						</ul>
-				</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>Contact</h4>
-						<ul>
-							<li><span>+88-01713458599</span></li>
-							<li><span>+88-01813458552</span></li>
-						</ul>
-						<div class="social-icons">
-							<h4>Follow Us</h4>
-					   		  <ul>
-							      <li class="facebook"><a href="#" target="_blank"> </a></li>
-							      <li class="twitter"><a href="#" target="_blank"> </a></li>
-							      <li class="googleplus"><a href="#" target="_blank"> </a></li>
-							      <li class="contact"><a href="#" target="_blank"> </a></li>
-							      <div class="clear"></div>
-						     </ul>
-   	 					</div>
-				</div>
-			</div>
-			<div class="copy_right">
-				<p>Training with live project &amp; All rights Reseverd </p>
-		   </div>
-     </div>
+<footer id="footer">
+    <!--Footer-->
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="companyinfo">
+              <h2>S-CART</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,sed do eiusmod tempor</p>
+            </div>
+          </div>
+          <div class="col-sm-7">
+            <div class="col-sm-3">
+              <div class="video-gallery text-center">
+                <a href="#">
+                  <div class="iframe-img">
+                    <img src="./public/templates/default/images/home/iframe1.png" alt="" />
+                  </div>
+                  <div class="overlay-icon">
+                    <i class="fa fa-play-circle-o"></i>
+                  </div>
+                </a>
+                <p>Circle of Hands</p>
+                <h2>24 DEC 2014</h2>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="video-gallery text-center">
+                <a href="#">
+                  <div class="iframe-img">
+                    <img src="./public/templates/default/images/home/iframe2.png" alt="" />
+                  </div>
+                  <div class="overlay-icon">
+                    <i class="fa fa-play-circle-o"></i>
+                  </div>
+                </a>
+                <p>Circle of Hands</p>
+                <h2>24 DEC 2014</h2>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="video-gallery text-center">
+                <a href="#">
+                  <div class="iframe-img">
+                    <img src="./public/templates/default/images/home/iframe3.png" alt="" />
+                  </div>
+                  <div class="overlay-icon">
+                    <i class="fa fa-play-circle-o"></i>
+                  </div>
+                </a>
+                <p>Circle of Hands</p>
+                <h2>24 DEC 2014</h2>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="video-gallery text-center">
+                <a href="#">
+                  <div class="iframe-img">
+                    <img src="./public/templates/default/images/home/iframe4.png" alt="" />
+                  </div>
+                  <div class="overlay-icon">
+                    <i class="fa fa-play-circle-o"></i>
+                  </div>
+                </a>
+                <p>Circle of Hands</p>
+                <h2>24 DEC 2014</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="address">
+              <img src="./public/templates/default/images/home/map.png" alt="" />
+              <p>123st - abc - xyz</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="footer-widget">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="single-widget">
+              <h2>Service</h2>
+              <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">Online Help</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Order Status</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="single-widget">
+              <h2>Policies</h2>
+              <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">Terms of Use</a></li>
+                <li><a href="#">Privecy Policy</a></li>
+                <li><a href="#">Refund Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="single-widget">
+              <h2>About us</h2>
+              <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">Address: 123st - abc - xyz</a></li>
+                <li><a href="#">Hotline: Support: 0987654321</a></li>
+                <li><a href="#">Email: admin@admin.com</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="single-widget">
+              <h2>Subscribe</h2>
+              <form action="./public/subscribe" method="post" class="searchform">
+                <input type="hidden" name="_token" value="Aw5HkJqwyZkgfGVE0Sm93smCUwyYQhxLPgptOdEX">
+                <input type="email" name="subscribe_email" required="required" placeholder="Your email">
+                <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button>
+                <p>Get the most recent updates from us</p>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row">
+          <p class="pull-left">Copyright © 2018 <a href="https://s-cart.org">S-Cart 2.1.3</a> Inc. All rights reserved.</p>
+          <p class="pull-right">Hosted by <span><a target="_blank" href="http://giaiphap247.com">GiaiPhap247</a></span></p>
+        </div>
+      </div>
+    </div>
+  </footer>
