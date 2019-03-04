@@ -14,7 +14,7 @@
               <div class="video-gallery text-center">
                 <a href="#">
                   <div class="iframe-img">
-                    <img src="./public/templates/default/images/home/iframe1.png" alt="" />
+                    <img src="<?php echo \Uri::base(false); ?>assets/images/home/iframe1.png" alt="" />
                   </div>
                   <div class="overlay-icon">
                     <i class="fa fa-play-circle-o"></i>
@@ -29,7 +29,7 @@
               <div class="video-gallery text-center">
                 <a href="#">
                   <div class="iframe-img">
-                    <img src="./public/templates/default/images/home/iframe2.png" alt="" />
+                    <img src="<?php echo \Uri::base(false); ?>assets/images/home/iframe2.png" alt="" />
                   </div>
                   <div class="overlay-icon">
                     <i class="fa fa-play-circle-o"></i>
@@ -44,7 +44,7 @@
               <div class="video-gallery text-center">
                 <a href="#">
                   <div class="iframe-img">
-                    <img src="./public/templates/default/images/home/iframe3.png" alt="" />
+                    <img src="<?php echo \Uri::base(false); ?>assets/images/home/iframe3.png" alt="" />
                   </div>
                   <div class="overlay-icon">
                     <i class="fa fa-play-circle-o"></i>
@@ -59,7 +59,7 @@
               <div class="video-gallery text-center">
                 <a href="#">
                   <div class="iframe-img">
-                    <img src="./public/templates/default/images/home/iframe4.png" alt="" />
+                    <img src="<?php echo \Uri::base(false); ?>assets/images/home/iframe4.png" alt="" />
                   </div>
                   <div class="overlay-icon">
                     <i class="fa fa-play-circle-o"></i>
@@ -72,7 +72,7 @@
           </div>
           <div class="col-sm-3">
             <div class="address">
-              <img src="./public/templates/default/images/home/map.png" alt="" />
+              <img src="<?php echo \Uri::base(false); ?>assets/images/home/map.png" alt="" />
               <p>123st - abc - xyz</p>
             </div>
           </div>
